@@ -38,7 +38,7 @@ module.exports = {
                     }
                     readFile(function(response) {
                         model.user.bulkCreate(response).then(function() {
-                            res.json('File uploaded and moved!');
+                            res.json('File uploaded and moved to database!');
                         })
 
                     })
