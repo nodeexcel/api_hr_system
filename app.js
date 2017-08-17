@@ -19,5 +19,4 @@ function errorHandler(err, req, res, next) {
 app.listen(3016, function() {
     console.log("Server started at port number: 3016");
 });
-//console.log(setTimeout())
-//setTimeout(function() {}, null);
+
