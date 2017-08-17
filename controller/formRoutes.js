@@ -40,12 +40,9 @@ module.exports = {
                         model.user.bulkCreate(response).then(function() {
                             res.json('File uploaded and moved!');
                         })
-
                     })
-
                 }
             });
-
         });
     }
 }
