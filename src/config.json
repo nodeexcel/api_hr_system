@@ -3,7 +3,7 @@
     {
         "name": "excellen_hr_demo",
         "username": "sumit",
-        "password": 123,
+        "password": "123",
         "dialect": "mysql"
     },
     "port": 3016

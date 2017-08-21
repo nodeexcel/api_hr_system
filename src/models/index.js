@@ -1,5 +1,5 @@
-import file from "./fileupload.js";
+import details from "./file.js";
 
-console.log("fileupload");
-
-exports.default = file
+export default {
+    details
+}

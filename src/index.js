@@ -10,10 +10,8 @@ import config from './config.json';
 let app = express();
 app.server = http.createServer(app);
 
-// logger
 app.use(morgan('dev'));
 
-// 3rd party middleware
 app.use(cors({
     exposedHeaders: config.corsHeaders
 }));
