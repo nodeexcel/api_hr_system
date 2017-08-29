@@ -17,7 +17,7 @@ module.exports = {
                     if (err) throw err;
                     else {
                         var lineReader = require('readline').createInterface({
-                            input: fs.createReadStream(newpath)
+                            input: fs.createReadStream(newpath) //stores file to ne path in upload
                         });
                         var count = 0;
                         var line_array = [];
@@ -40,7 +40,7 @@ module.exports = {
                                     })
                                 }
                                 if (flag == 0) {
-                                    filtered_data.push(fetched_data);
+                                    filtered_data.push(fetched_data); // array of non repeative data from file
                                 }
                                 count++;
                             });
@@ -49,7 +49,7 @@ module.exports = {
                             })
                         }
                         readFile(function(response) {
-                            model.details.bulkCreate(response).then((data) => {
+                            model.details.bulkCreate(response).then((data) => { // insert data into database
                                 resolve("ok");
                             })
                         })

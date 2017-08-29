@@ -14,7 +14,7 @@ module.exports = {
             var line_array = [];
             var filtered_data = [];
 
-            function readFile(callback) {
+            function readFile(callback) { // read file from file or data from database that is successfully entered 
                 lineReader.on('line', function(line) {
                     line_array.push(line.split("\t"))
                     if (line_array[count][0] && count >= 1) {
