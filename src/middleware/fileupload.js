@@ -1,12 +1,16 @@
 import fs from "fs";
 import model from '../db';
 import path from "path";
+import _ from 'lodash';
 
 module.exports = {
 
     fileUpload: function(form, req, res) {
-        return new Promise((reslove, reject) => {
+        return new Promise((resolve, reject) => {
             form.parse(req, function(err, field, file) {
+                if (file != "AGL_001.TXT") {
+                    reject("Wrong file inserted");
+                }
                 var oldpath = file.file.path;
                 var newpath = path.join(__dirname, './uploads/' + file.file.name);
                 fs.rename(oldpath, newpath, function(err) {
@@ -24,16 +28,18 @@ module.exports = {
                                 line_array.push(line.split("\t"))
                                 if (line_array[count][0] && count >= 1) {
                                     var fetched_data = {
-                                        No: line_array[count][0],
-                                        TMNo: line_array[count][1],
-                                        EnNo: line_array[count][2],
-                                        Name: line_array[count][3],
-                                        GMNo: line_array[count][4],
-                                        Mode: line_array[count][5],
-                                        "IN/OUT": line_array[count][6],
-                                        Antipass: line_array[count][7],
-                                        DateTime: line_array[count][8]
+                                        id: line_array[count][0],
+                                        user_id: line_array[count][2],
+                                        timing: line_array[count][8]
                                     }
+                                    var flag = 0;
+                                    _.forEach(filtered_data, function(value) {
+                                        if (value.id == fetched_data.id) {
+                                            flag = 1;
+                                        }
+                                    })
+                                }
+                                if (flag == 0) {
                                     filtered_data.push(fetched_data);
                                 }
                                 count++;
@@ -43,9 +49,8 @@ module.exports = {
                             })
                         }
                         readFile(function(response) {
-                            model.details.bulkCreate(response).then(function() {
-                                fs.unlink(newpath);
-                                res.json('File uploaded and data moved!');
+                            model.details.bulkCreate(response).then((data) => {
+                                resolve("ok");
                             })
                         })
                     }
