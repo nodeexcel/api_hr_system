@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import account from "./form";
+import form from "./form";
 
 export default () => {
     let api = Router();
 
-    api.route('/user/attendance/').post(account.attendance);
+    api.route('/user/attendance/').post(form.attendance);
 
     return api;
 }
