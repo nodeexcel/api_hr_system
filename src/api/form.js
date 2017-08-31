@@ -1,11 +1,12 @@
-import model from '../middleware/fileupload';
+import model from '../middleware';
 import formidable from "formidable";
 
 module.exports = {
 
     attendance: (req, res, next) => {
         var form = new formidable.IncomingForm();
-        model.fileUpload(form, req, res);
-
+        model.upload.fileUpload(form, req, res).then((status) => {
+            res.json({ message: status })
+        });
     }
-};
+}

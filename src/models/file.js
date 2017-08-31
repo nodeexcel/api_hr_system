@@ -1,18 +1,11 @@
-import fs from "fs";
-
 export default function(sequelize, DataTypes) {
-    var details = sequelize.define('attendances', {
-        No: { type: DataTypes.INTEGER },
-        TMNo: { type: DataTypes.INTEGER },
-        EnNo: { type: DataTypes.INTEGER },
-        Name: { type: DataTypes.STRING },
-        GMNo: { type: DataTypes.INTEGER },
-        Mode: { type: DataTypes.INTEGER },
-        "IN/OUT": { type: DataTypes.STRING },
-        Antipass: { type: DataTypes.STRING },
-        DateTime: { type: DataTypes.STRING },
+    var details = sequelize.define('attendances', { // inserting data to database of attendance
+        id: { type: DataTypes.INTEGER, primaryKey: true },
+        user_id: { type: DataTypes.INTEGER },
+        timing: { type: DataTypes.STRING(1234) }
     }, {
-        timestamps: true
+        timestamps: false
     });
+
     return details
 }
