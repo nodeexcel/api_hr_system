@@ -6,6 +6,14 @@ module.exports = {
         model.upload.uploadAttendance(req, res).then((status) => {
             res.json({ message: status })
         });
+    },
+
+    attendanceByEmployee: (req, res, next) => {
+        model.upload.uploadAttendanceByUserId(req, res).then((status) => {
+            res.json(status)
+        }).catch((err) => {
+            res.json(err);
+        })
     }
 
 }
