@@ -5,7 +5,7 @@ import _ from 'lodash';
 import config from '../config.json'
 module.exports = {
 
-    fileUpload: function(req, res) {
+    uploadAttendance: function(req, res) {
         return new Promise((resolve, reject) => {
             var oldpath = config.path;
             var newpath = path.join(__dirname, './uploads/AGL_001.TXT');
@@ -23,7 +23,6 @@ module.exports = {
                         lineReader.on('line', function(line) {
                             line_array.push(line.split("\t"))
                             if (line_array[count][0] && count >= 1) {
-                                console.log(line_array[count])
                                 var fetched_data = {
                                     id: line_array[count][0],
                                     user_id: line_array[count][2],
