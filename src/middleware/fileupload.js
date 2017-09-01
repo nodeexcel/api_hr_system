@@ -31,7 +31,7 @@ module.exports = {
                                 }
                                 var flag = 0;
                                 _.forEach(filtered_data, function(value) {
-                                    console.log((fetched_data.user_id).toString().trim())
+
                                     if (value.id == fetched_data.id || (fetched_data.user_id).toString().trim() == "0") {
                                         flag = 1;
                                     }
