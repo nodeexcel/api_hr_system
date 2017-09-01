@@ -1,4 +1,4 @@
-import details from "./file.js";
+import details from "./attendance.js";
 
 export default {
     details

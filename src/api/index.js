@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import account from "./form";
+import upload from "./upload.js";
 
 export default () => {
     let api = Router();
 
-    api.route('/user/attendance/').post(account.attendance);
+    api.route('/user/attendance/').get(upload.attendance);
 
     return api;
 }
