@@ -1,9 +1,9 @@
-import model from '../middleware';
+import service from '../services';
 
 module.exports = {
 
     attendance: (req, res, next) => {
-        model.upload.uploadAttendance(req, res).then((status) => {
+        service.upload.uploadAttendance(req, res).then((status) => {
             res.json({ message: status })
         }).catch((err) => {
             res.json(err);
@@ -11,7 +11,7 @@ module.exports = {
     },
 
     attendanceByEmployee: (req, res, next) => {
-        model.upload.uploadAttendanceByUserId(req, res).then((status) => {
+        service.upload.uploadAttendanceByUserId(req, res).then((status) => {
             res.json(status)
         }).catch((err) => {
             res.json(err);

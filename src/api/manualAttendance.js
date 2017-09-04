@@ -1,15 +1,15 @@
-import model from '../middleware';
+import service from '../services';
 
 module.exports = {
 
     manualUpdatedAttendance: (req, res, next) => {
-        model.get_manual_attendance.manualUpdate(req, res).then(() => {}).catch((err) => {
+        service.get_manual_attendance.manualUpdate(req, res).then(() => {}).catch((err) => { // gets all data manually entered by employees which is not reviewed
             res.json(err);
         })
     },
 
-    approovalAction: (req, res, next) => {
-        model.approoval.approoveUpdate(req, res).then((status) => {
+    approvalAction: (req, res, next) => {
+        service.approval.approveUpdate(req, res).then((status) => { //approves or decline the manual attendance request
             res.json(status);
         }).catch((err) => {
             res.json(err)

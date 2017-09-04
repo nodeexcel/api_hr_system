@@ -8,7 +8,7 @@ export default () => {
     api.route('/user/attendance/').get(upload.attendance);
     api.route('/attendance/update_time_by_employee').get(upload.attendanceByEmployee);
     api.route('/attendance/manual/').get(fetch.manualUpdatedAttendance);
-    api.route('/attendance/approoval').get(fetch.approovalAction);
+    api.route('/attendance/approval').get(fetch.approvalAction);
 
     return api;
 }
