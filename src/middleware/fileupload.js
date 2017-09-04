@@ -60,46 +60,27 @@ module.exports = {
 
     uploadAttendanceByUserId: (req, res) => {
         return new Promise((resolve, reject) => {
-            var entryTime = req.query.date + " " + moment(req.query.entry_time, ["h:mm A"]).format("HH:mm");
+            var entryTime = req.query.date + " " + moment(req.query.entry_time, ["h:mm:ss A"]).format("HH:mm:ss");
             entryTime = entryTime.replace(/\-/g, '/');
-            var exitTime = req.query.date + " " + moment(req.query.exit_time, ["h:mm A"]).format("HH:mm");
+            var exitTime = req.query.date + " " + moment(req.query.exit_time, ["h:mm:ss A"]).format("HH:mm:ss");
             exitTime = exitTime.replace(/\-/g, '/');
             db.details.findAll({ where: { user_id: req.query.userid } }).then((data) => { //fetching all record for user id
-                var entry = 0;
-                var exit = 0;
+                var errorCode = 0;
                 _.forEach(data, function(employee) {
-                    if (employee.timing == entryTime) { //comparing each fileterd entry with input time for entry and exit
-                        entry = 1;
-                    } else if (employee.timing == exitTime) {
-                        exit = 1;
+                    if (employee.timing == entryTime || employee.timing == exitTime) { //comparing each fileterd entry with input time for entry and exit
+                        errorCode = 1;
+                        reject({ "error": errorCode, "data": { "message": "Record exists" } })
                     }
                 })
-                if (entry == 1 && exit == 1) { // checking flags to decide whethe rto create record or not
-                    reject({ "error": 1, "data": { "message": "Entry and exit both already exists for the user", "reason": req.query.reason } })
-                } else if (entry == 0 && exit == 0) {
+                if (errorCode == 0) { //checking for error code
                     db.details.create({ user_id: req.query.userid, timing: entryTime }).then(() => {
                         db.details.create({ user_id: req.query.userid, timing: exitTime }).then(() => {
                             resolve({ "error": 0, "data": { "message": "Data entered" } })
                         }).catch((err) => {
                             reject({ "error": 1, "data": { err } })
                         })
-                    }).catch((err) => {
-                        reject({ "error": 1, "data": { err } })
-                    })
-                } else if (entry == 1) {
-                    details.create({ user_id: req.query.userid, timing: exitTime }).then(() => {
-                        resolve({ "error": 1, "data": { "message": "Exit time updated ,entry found for the user", "reason": req.query.reason } })
-                    }).catch((err) => {
-                        reject({ "error": 1, "data": { err } })
-                    })
-                } else {
-                    db.details.create({ user_id: req.query.userid, timing: entryTime }).then(() => {
-                        reject({ "error": 1, "data": { "message": "entry time updated , exit found for the user", "reason": req.query.reason } })
-                    }).catch((err) => {
-                        reject({ "error": 1, "data": { err } })
                     })
                 }
-
             })
         })
     }
