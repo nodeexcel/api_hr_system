@@ -4,10 +4,10 @@ module.exports = {
 
     approveUpdate: function(req, res) {
         return new Promise((resolve, reject) => {
-            db.manual.update({ action: req.query.action }, { where: { id: req.query.id } }).then(() => {
-                db.manual.find({ where: { id: req.query.id } }).then((data) => {
+            db.manual.update({ action: req.query.action }, { where: { id: req.query.id } }).then(function() {
+                db.manual.find({ where: { id: req.query.id } }).then(function(data) {
                     if (data.action == true) {
-                        db.details.create({ user_id: data.user_id, timing: data.timing }).then(() => {
+                        db.details.create({ user_id: data.user_id, timing: data.timing }).then(function() {
                             resolve("approved");
                         })
                     } else {

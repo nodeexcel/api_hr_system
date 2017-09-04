@@ -1,9 +1,9 @@
-import service from '../services';
+import upload from '../models/attendance_upload';
 
 module.exports = {
 
     attendance: (req, res, next) => {
-        service.upload.uploadAttendance(req, res).then((status) => {
+        upload.uploadAttendance(req, res).then((status) => {
             res.json({ message: status })
         }).catch((err) => {
             res.json(err);
@@ -11,7 +11,7 @@ module.exports = {
     },
 
     attendanceByEmployee: (req, res, next) => {
-        service.upload.uploadAttendanceByUserId(req, res).then((status) => {
+        upload.uploadAttendanceByUserId(req, res).then((status) => {
             res.json(status)
         }).catch((err) => {
             res.json(err);
