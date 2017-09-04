@@ -11,7 +11,7 @@ module.exports = {
             var oldpath = config.path;
             var newpath = path.join(__dirname, './uploads/AGL_001.TXT');
             fs.rename(oldpath, newpath, function(err) { //stores file to new path in upload folder
-                if (err) throw err;
+                if (err) reject(err);
                 else {
                     var lineReader = require('readline').createInterface({
                         input: fs.createReadStream(newpath) //read file from new path in upload folder
@@ -31,7 +31,6 @@ module.exports = {
                                 }
                                 var flag = 0;
                                 _.forEach(filtered_data, function(value) {
-
                                     if (value.id == fetched_data.id || (fetched_data.user_id).toString().trim() == "0") { //checks duplicate id as id is primary key
                                         flag = 1;
                                     }
@@ -66,20 +65,22 @@ module.exports = {
             exitTime = exitTime.replace(/\-/g, '/');
             db.details.findAll({ where: { user_id: req.query.userid } }).then((data) => { //fetching all record for user id
                 var errorCode = 0;
-                _.forEach(data, function(employee) {
-                    if (employee.timing == entryTime || employee.timing == exitTime) { //comparing each fileterd entry with input time for entry and exit
-                        errorCode = 1;
-                        reject({ "error": errorCode, "data": { "message": "Record exists" } })
-                    }
-                })
-                if (errorCode == 0) { //checking for error code
-                    db.details.create({ user_id: req.query.userid, timing: entryTime }).then(() => {
-                        db.details.create({ user_id: req.query.userid, timing: exitTime }).then(() => {
-                            resolve({ "error": 0, "data": { "message": "Data entered" } })
-                        }).catch((err) => {
-                            reject({ "error": 1, "data": { err } })
-                        })
+                if (data) {
+                    _.forEach(data, function(employee) {
+                        if (employee.timing == entryTime || employee.timing == exitTime) { //comparing each fileterd entry with input time for entry and exit
+                            errorCode = 1;
+                            reject({ "error": errorCode, "data": { "message": "Record exists" } })
+                        }
                     })
+                    if (errorCode == 0) { //checking for error code
+                        db.manual.create({ user_id: req.query.userid, timing: entryTime, reason: req.query.reason }).then(() => {
+                            db.manual.create({ user_id: req.query.userid, timing: exitTime, reason: req.query.reason }).then(() => {
+                                resolve({ "error": 0, "data": { "message": "Data entered", "reason": req.query.reason } })
+                            }).catch((err) => {
+                                reject({ "error": 1, "data": { err } })
+                            })
+                        })
+                    }
                 }
             })
         })
