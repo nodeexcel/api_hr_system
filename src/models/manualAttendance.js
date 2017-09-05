@@ -14,30 +14,24 @@ export default function(sequelize, DataTypes) {
         return new Promise((resolve, reject) => {
             manual.findAll({ where: { action: null } }).then((data) => {
                 resolve(data)
-            }).catch((err) => {
-                reject(err)
-            })
+            }).catch(err => reject(err))
 
         })
     }
 
-    manual.approveUpdate = function(req, res, db) {
-        return new Promise((resolve, reject) => {
-            manual.update({ action: req.query.action }, { where: { id: req.query.id } }).then(function() {
-                manual.find({ where: { id: req.query.id } }).then(function(data) {
-                    if (data.action == true) {
-                        db.details.create({ user_id: data.user_id, timing: data.timing }).then(function() {
-                            resolve("approved");
-                        })
-                    } else {
-                        reject("declined");
-                    }
-                })
-            }).catch((err) => {
-                reject(err)
+    manual.approveUpdate = function(req, res, db, callback) {
+        manual.update({ action: req.query.action }, { where: { id: req.query.id } }).then(function() {
+            manual.find({ where: { id: req.query.id } }).then(function(data) {
+                if (data.action == true) {
+                    db.details.create({ user_id: data.user_id, timing: data.timing }).then(function() {
+                        callback(true);
+                    })
+                } else {
+                    callback(false);
+                }
             })
-        })
-    }
+        }).catch(err => res.json({ error: err }))
 
+    }
     return manual
 }
