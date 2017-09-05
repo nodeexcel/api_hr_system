@@ -1,7 +1,7 @@
-import details from "./attendance.js";
-import manual from "./manualAttendance.js";
+import attendance from "./attendance.js";
+import manual_attendance from "./manualAttendance.js";
 
 export default {
-    details,
-    manual
+    attendance,
+    manual_attendance
 }
