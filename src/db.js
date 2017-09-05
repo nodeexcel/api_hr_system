@@ -10,6 +10,12 @@ Object.keys(models).forEach((modelName) => {
     db[modelName] = model;
 });
 
+Object.keys(db).forEach((modelName) => {
+    if (db[modelName].options.associate) {
+        db[modelName].options.associate(db);
+    }
+});
+
 sequelize.sync().then((data) => {})
 
 export default Object.assign({}, db, {

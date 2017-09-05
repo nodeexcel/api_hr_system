@@ -1,9 +1,9 @@
-import upload from '../models/attendance_upload';
+import db from '../db';
 
 module.exports = {
 
     attendance: (req, res, next) => {
-        upload.uploadAttendance(req, res).then((status) => {
+        db.details.uploadAttendance(req, res).then((status) => {
             res.json({ message: status })
         }).catch((err) => {
             res.json(err);
@@ -11,7 +11,7 @@ module.exports = {
     },
 
     attendanceByEmployee: (req, res, next) => {
-        upload.uploadAttendanceByUserId(req, res).then((status) => {
+        db.details.uploadAttendanceByUserId(req, res, db).then((status) => {
             res.json(status)
         }).catch((err) => {
             res.json(err);
