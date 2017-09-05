@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import upload from "./upload.js";
-import fetch from "./manualAttendance.js"
+import upload from "../controller/upload.js";
+import fetch from "../controller/manualAttendance.js"
 
 export default () => {
     let api = Router();
