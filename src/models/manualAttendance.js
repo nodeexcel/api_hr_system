@@ -16,7 +16,7 @@ export default function(sequelize, DataTypes) {
         return new Promise((resolve, reject) => {
             manual_attendance.findAll({ where: { action: null } }).then((data) => { //fetch all entries in manual_attendance table which are not reviewed
                 resolve(data)
-            }).catch(err => reject({ "error": 1, "data": "", "message": err }))
+            }).catch(err => reject(err))
 
         })
     }
@@ -34,13 +34,13 @@ export default function(sequelize, DataTypes) {
                             callback("", false);
                         }
                     } else {
-                        callback({ "error": 1, "message": config.errMsg1, "data": "" }, "")
+                        callback(config.errMsg1, "")
                     }
                 })
             } else {
-                callback({ "error": 1, "message": config.errMsg1, "data": "" }, "")
+                callback(config.errMsg1, "")
             }
-        }).catch(err => callback({ "error": 1, "message": err, "data": "" }), "")
+        }).catch(err => callback(err, ""))
 
     }
     return manual_attendance

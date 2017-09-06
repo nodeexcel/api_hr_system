@@ -13,7 +13,7 @@ module.exports = {
             if (error) {
                 next(error)
             } else {
-                res.json({ "error": 0, "message": status, "data": "" })
+                res.json({ "error": 0, "message": "", "data": status })
             }
         })
     }

@@ -10,7 +10,7 @@ module.exports = {
 
     attendanceByEmployee: (req, res, next) => {
         db.attendance.uploadAttendanceByUserId(req.query, db).then((status) => { //uploads attendance  by employees in manual_attenance table
-            res.json({ "error": 0, "message": status, "data": "" })
+            res.json(status)
         }).catch(err => next(err))
     }
 
