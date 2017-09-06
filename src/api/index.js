@@ -8,6 +8,7 @@ export default () => {
     api.route('/attendance/update_time_by_employee').get(controller.upload.attendanceByEmployee);
     api.route('/attendance/manual/').get(controller.fetch.manualUpdatedAttendance);
     api.route('/attendance/approval').get(controller.fetch.approvalAction);
+    api.route('/reports/get_team_stats').post(controller.stats.teamStats);
 
     return api;
 }
