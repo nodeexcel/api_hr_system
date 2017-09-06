@@ -39,7 +39,7 @@ export default function(sequelize, DataTypes) {
                 helper.time.timeConvertion(query.date, query.entry_time, query.exit_time, function(entryTime, exitTime) { //converts date and time in required format
                     attendance.findAll({ where: { user_id: query.userid } }).then((data) => { //fetching all record for user id
                         let errorCode = 0;
-                        if (data[0]) {
+                        if (data.length != 0) {
                             _.forEach(data, function(employee) {
                                 if (employee.timing == entryTime || employee.timing == exitTime) { //comparing each fileterd entry with input time for entry and exit
                                     errorCode = 1;
