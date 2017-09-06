@@ -26,7 +26,7 @@ app.use(errorHandler);
 
 function errorHandler(err, req, res, next) {
     if (err) {
-        res.status(400).json({ error: err });
+        res.status(400).json({ "error": 1, "message": err, "data": "" });
     }
 }
 

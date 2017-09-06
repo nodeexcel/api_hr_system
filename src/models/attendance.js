@@ -25,7 +25,7 @@ export default function(sequelize, DataTypes) {
                         helper.attendance.readFile(newpath, function(response) {
                             attendance.bulkCreate(response).then((data) => { // insert data into database
                                 fs.unlink(newpath);
-                                resolve({ success: config.fileSuccessMsg });
+                                resolve(config.fileSuccessMsg);
                             })
                         })
                     }
@@ -43,20 +43,20 @@ export default function(sequelize, DataTypes) {
                             _.forEach(data, function(employee) {
                                 if (employee.timing == entryTime || employee.timing == exitTime) { //comparing each fileterd entry with input time for entry and exit
                                     errorCode = 1;
-                                    reject({ "error": errorCode, "data": { "message": "Record exists" } })
+                                    reject({ "error": errorCode, "data": "", "message": "Record exists" })
                                 }
                             })
                             if (!errorCode) { //checking for error code
                                 db.manual_attendance.create({ user_id: query.userid, timing: entryTime, reason: query.reason }).then(() => { //updating entry and exit time
                                     db.manual_attendance.create({ user_id: query.userid, timing: exitTime, reason: query.reason }).then(() => {
-                                        resolve({ "error": 0, "data": { "message": "Data entered", "reason": query.reason } })
-                                    }).catch(err => reject({ "error": 1, "data": { err } }))
+                                        resolve({ "error": 0, "data": "", "message": "Data entered", "reason": query.reason })
+                                    }).catch(err => reject({ "error": 1, "data": "", "message": err }))
                                 })
                             }
                         } else {
-                            reject({ "error": 1, message: config.errMsg1 })
+                            reject({ "error": 1, "data": "", "message": config.errMsg1 })
                         }
-                    }).catch(err => reject(err))
+                    }).catch(err => reject({ "error": 1, "data": "", "message": err }))
                 })
             })
         }

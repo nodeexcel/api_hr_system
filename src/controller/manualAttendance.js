@@ -4,7 +4,7 @@ module.exports = {
 
     manualUpdatedAttendance: (req, res, next) => {
         db.manual_attendance.manualUpdateAttendance().then((data) => { // gets all data manually entered by employees which is not reviewed
-            res.json({ data: data })
+            res.json({ "error": 0, "message": "", "data": data, })
         }).catch(err => next(err))
     },
 
@@ -13,7 +13,7 @@ module.exports = {
             if (error) {
                 next(error)
             } else {
-                res.json({ message: status });
+                res.json({ "error": 0, "message": status, "data": "" })
             }
         })
     }
