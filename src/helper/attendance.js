@@ -25,7 +25,7 @@ module.exports = {
                     }
                 })
 
-                if (flag == 0) {
+                if (!flag) {
                     filtered_data.push(fetched_data); // array of non repeative data from file
                 }
             }
