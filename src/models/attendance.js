@@ -36,7 +36,7 @@ export default function(sequelize, DataTypes) {
 
         attendance.uploadAttendanceByUserId = (query, db) => {
             return new Promise((resolve, reject) => {
-                helper.time.timeConvertion(query.date, query.entry_time, query.exit_time, function(entryTime, exitTime) {
+                helper.time.timeConvertion(query.date, query.entry_time, query.exit_time, function(entryTime, exitTime) { //converts date and time in required format
                     attendance.findAll({ where: { user_id: query.userid } }).then((data) => { //fetching all record for user id
                         let errorCode = 0;
                         if (data[0]) {
@@ -47,7 +47,7 @@ export default function(sequelize, DataTypes) {
                                 }
                             })
                             if (!errorCode) { //checking for error code
-                                db.manual_attendance.create({ user_id: query.userid, timing: entryTime, reason: query.reason }).then(() => {
+                                db.manual_attendance.create({ user_id: query.userid, timing: entryTime, reason: query.reason }).then(() => { //updating entry and exit time
                                     db.manual_attendance.create({ user_id: query.userid, timing: exitTime, reason: query.reason }).then(() => {
                                         resolve({ "error": 0, "data": { "message": "Data entered", "reason": query.reason } })
                                     }).catch(err => reject({ "error": 1, "data": { err } }))

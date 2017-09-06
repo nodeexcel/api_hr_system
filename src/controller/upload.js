@@ -3,15 +3,15 @@ import db from '../db';
 module.exports = {
 
     attendance: (req, res, next) => {
-        db.attendance.uploadAttendance().then((status) => {
+        db.attendance.uploadAttendance().then((status) => { //uploads attendance fie in database
             res.json(status)
-        }).catch(err => res.json(err))
+        }).catch(err => next(err))
     },
 
     attendanceByEmployee: (req, res, next) => {
-        db.attendance.uploadAttendanceByUserId(req.query, db).then((status) => {
+        db.attendance.uploadAttendanceByUserId(req.query, db).then((status) => { //uploads attendance  by employees in manual_attenance table
             res.json(status)
-        }).catch(err => res.json(err))
+        }).catch(err => next(err))
     }
 
 }

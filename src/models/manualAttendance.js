@@ -14,29 +14,29 @@ export default function(sequelize, DataTypes) {
 
     manual_attendance.manualUpdateAttendance = function() {
         return new Promise((resolve, reject) => {
-            manual_attendance.findAll({ where: { action: null } }).then((data) => {
+            manual_attendance.findAll({ where: { action: null } }).then((data) => { //fetch all entries in manual_attendance table which are not reviewed
                 resolve(data)
             }).catch(err => reject(err))
 
         })
     }
 
-    manual_attendance.approveUpdatedAttendance = function(query, res, db, callback) {
-        manual_attendance.update({ action: query.action }, { where: { id: query.id } }).then(function() {
+    manual_attendance.approveUpdatedAttendance = function(query, db, callback) {
+        manual_attendance.update({ action: query.action }, { where: { id: query.id } }).then(function() { //updtaes manual_attenadance table
             manual_attendance.find({ where: { id: query.id } }).then(function(data) {
                 if (data) {
-                    if (data.action == true) {
+                    if (data.action == true) { // if approved ,data is inserted in attendance table
                         db.attendance.create({ user_id: data.user_id, timing: data.timing }).then(function() {
-                            callback(true);
+                            callback("", true);
                         })
                     } else {
-                        callback(false);
+                        callback("", false);
                     }
                 } else {
-                    res.json({ error: config.errMsg1 })
+                    callback({ error: config.errMsg1 }, "")
                 }
             })
-        }).catch(err => res.json({ error: err }))
+        }).catch(err => callback({ error: err }), "")
 
     }
     return manual_attendance

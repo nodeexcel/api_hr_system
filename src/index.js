@@ -22,6 +22,14 @@ app.use(bodyParser.json({
 
 app.use('/', api());
 
+app.use(errorHandler);
+
+function errorHandler(err, req, res, next) {
+    if (err) {
+        res.status(400).json({ error: err });
+    }
+}
+
 app.server.listen(process.env.PORT || config.port, () => {
     console.log(`Started on port ${app.server.address().port}`);
 });

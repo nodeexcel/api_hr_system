@@ -12,7 +12,7 @@ module.exports = {
 
         lineReader.on('line', function(line) {
             line_array.push(line.split("\t"))
-            if (line_array[count][0] && count >= 1) {
+            if (line_array[count][0] && count >= 1) { // fetches each row in file as array except first header row
                 let fetched_data = {
                     id: line_array[count][0],
                     user_id: line_array[count][2],
