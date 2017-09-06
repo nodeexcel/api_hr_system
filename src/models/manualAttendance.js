@@ -1,4 +1,4 @@
-import config from '../config';
+import config from '../../../config';
 
 export default function(sequelize, DataTypes) {
     let manual_attendance = sequelize.define('manual_attendance', { // inserting data to database of attendance
