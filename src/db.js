@@ -1,6 +1,6 @@
 import Sequelize from "sequelize";
 import models from "./models";
-import config from "./config.json";
+import config from "../../config.json";
 const db = {};
 
 const sequelize = new Sequelize(config.db.name, config.db.username, config.db.password, { dialect: config.db.dialect });

@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 import _ from 'lodash';
-import config from '../config.json'
+import config from '../../../config.json'
 import moment from 'moment';
 import helper from '../helper';
 
