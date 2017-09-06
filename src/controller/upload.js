@@ -4,7 +4,7 @@ module.exports = {
 
     attendance: (req, res, next) => {
         db.attendance.uploadAttendance().then((status) => { //uploads attendance fie in database
-            res.json({ "error": 0, "message": status, "data": "" })
+            res.json(status)
         }).catch(err => next(err))
     },
 
