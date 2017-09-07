@@ -21,10 +21,10 @@ export default function(sequelize, DataTypes) {
         })
     }
 
-    manual_attendance.approveUpdatedAttendance = function(query, db, callback) {
-        manual_attendance.update({ action: query.action }, { where: { id: query.id } }).then(function(rowsAffected) { //updtaes manual_attenadance table
+    manual_attendance.approveUpdatedAttendance = function(body, db, callback) {
+        manual_attendance.update({ action: body.action }, { where: { id: body.id } }).then(function(rowsAffected) { //updtaes manual_attenadance table
             if (rowsAffected[0]) {
-                manual_attendance.find({ where: { id: query.id } }).then(function(data) {
+                manual_attendance.find({ where: { id: body.id } }).then(function(data) {
                     if (data) {
                         if (data.action == true) { // if approved ,data is inserted in attendance table
                             db.attendance.create({ user_id: data.user_id, timing: data.timing }).then(function() {
