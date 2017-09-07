@@ -34,11 +34,12 @@ export default function(sequelize, DataTypes) {
             })
         },
 
-        attendance.uploadAttendanceByUserId = (query, db) => {
+        attendance.uploadAttendanceByUserId = (body, db) => {
             return new Promise((resolve, reject) => {
-                helper.time.timeConvertion(query.date, query.entry_time, query.exit_time, function(entryTime, exitTime) { //converts date and time in required format
-                    attendance.findAll({ where: { user_id: query.userid } }).then((data) => { //fetching all record for user id
+                helper.time.timeConvertion(body.date, body.entry_time, body.exit_time, function(entryTime, exitTime) { //converts date and time in required format
+                    attendance.findAll({ where: { user_id: body.userid } }).then((data) => { //fetching all record for user id
                         let errorCode = 0;
+                        console.log(body)
                         if (data.length != 0) {
                             _.forEach(data, function(employee) {
                                 if (employee.timing == entryTime || employee.timing == exitTime) { //comparing each fileterd entry with input time for entry and exit
@@ -47,9 +48,9 @@ export default function(sequelize, DataTypes) {
                                 }
                             })
                             if (!errorCode) { //checking for error code
-                                db.manual_attendance.create({ user_id: query.userid, timing: entryTime, reason: query.reason }).then(() => { //updating entry and exit time
-                                    db.manual_attendance.create({ user_id: query.userid, timing: exitTime, reason: query.reason }).then(() => {
-                                        resolve({ "error": 0, "data": "", "message": "Data entered", "reason": query.reason })
+                                db.manual_attendance.create({ user_id: body.userid, timing: entryTime, reason: body.reason }).then(() => { //updating entry and exit time
+                                    db.manual_attendance.create({ user_id: body.userid, timing: exitTime, reason: body.reason }).then(() => {
+                                        resolve({ "error": 0, "data": "", "message": "Data entered", "reason": body.reason })
                                     }).catch(err => reject(err))
                                 })
                             }
