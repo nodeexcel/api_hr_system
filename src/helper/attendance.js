@@ -1,5 +1,6 @@
 import fs from "fs";
 import _ from 'lodash';
+import moment from 'moment';
 
 module.exports = {
     readFile: function(newpath, callback) {
@@ -16,7 +17,7 @@ module.exports = {
                 let fetched_data = {
                     id: line_array[count][0],
                     user_id: line_array[count][2],
-                    timing: line_array[count][6]
+                    timing: moment(line_array[count][6]).format("MM-DD-YYYY hh:mm:ssA")
                 }
                 let flag = 0;
                 _.forEach(filtered_data, function(value) {

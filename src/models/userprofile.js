@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export default function(sequelize, DataTypes) {
 
     var user_profile = sequelize.define('user_profile', { // inserting data to database of attendance
@@ -45,7 +47,32 @@ export default function(sequelize, DataTypes) {
         //     user_profile.belongsTo(model.user_complete_data, { foreignKey: 'user_id' });
         // }
 
-    });
+    }); //SELECT user_profile.name,user_profile.jobtitle,user_profile.dateofjoining,user_profile.team FROM user_profile LEFT JOIN users ON user_profile.user_Id=users.id WHERE users.status='Enabled'
+
+    user_profile.employeeGraphStats = (db) => {
+        console.log("3")
+        sequelize.query("SELECT user_profile.name,user_profile.jobtitle,user_profile.dateofjoining,user_profile.team FROM user_profile LEFT JOIN users ON user_profile.user_Id=users.id WHERE users.status=:status ", { replacements: { status: 'Enabled' }, type: sequelize.QueryTypes.SELECT }).then((data) => {
+            console.log(data)
+            _.forEach(data, function(employee) {
+                let month = new Date(employee.dateofjoining).getMonth();
+                let year = new Date(employee.dateofjoining).getFullYear();
+                let number_of_months = (12 - (month + 1)) + (new Date().getMonth() + 1) + ((new Date().getFullYear() - year - 1) * 12);
+                console.log(month, year, number_of_months)
+            })
+        });
+
+        // user_profile.findAll({
+        //     attributes: ['name', 'dateofjoining', 'jobtitle', 'team'],
+        //     include: [{
+        //         attributes: ['id', 'status'],
+        //         model: users,
+        //         where: { status: 'Enabled' }
+        //     }],
+        //     where: { user_Id: db.sequelize.col('users.id') }
+        // }).then((data) => {
+        //     console.log(data)
+        // })
+    }
 
     return user_profile;
 }

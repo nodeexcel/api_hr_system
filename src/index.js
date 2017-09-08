@@ -6,6 +6,8 @@ import bodyParser from 'body-parser';
 import db from './db.js';
 import api from './api';
 import config from '../../config.json';
+import multer from 'multer';
+let upload = multer();
 
 let app = express();
 app.server = http.createServer(app);
@@ -16,9 +18,14 @@ app.use(cors({
     exposedHeaders: config.corsHeaders
 }));
 
-app.use(bodyParser.json({
-    limit: config.bodyLimit
+app.use(bodyParser.urlencoded({
+    extended: true
 }));
+
+app.use(bodyParser.json());
+
+app.use(upload.array());
+app.use(express.static('public'));
 
 app.use('/', api());
 

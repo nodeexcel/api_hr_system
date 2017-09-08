@@ -1,4 +1,5 @@
 import db from '../db';
+import multer from 'multer';
 
 module.exports = {
 
@@ -9,7 +10,8 @@ module.exports = {
     },
 
     attendanceByEmployee: (req, res, next) => {
-        db.attendance.uploadAttendanceByUserId(req.query, db).then((status) => { //uploads attendance  by employees in manual_attenance table
+        console.log(req.body)
+        db.attendance.uploadAttendanceByUserId(req.body, db).then((status) => { //uploads attendance  by employees in manual_attenance table
             res.json(status)
         }).catch(err => next(err))
     }
