@@ -43,16 +43,11 @@ export default function(sequelize, DataTypes) {
         unique_key: { type: DataTypes.STRING }
     }, {
         timestamps: false
-        // associate: (model) => {
-        //     user_profile.belongsTo(model.user_complete_data, { foreignKey: 'user_id' });
-        // }
-
-    }); //SELECT user_profile.name,user_profile.jobtitle,user_profile.dateofjoining,user_profile.team FROM user_profile LEFT JOIN users ON user_profile.user_Id=users.id WHERE users.status='Enabled'
+    });
 
     user_profile.employeeGraphStats = (db) => {
         return new Promise((resolve, reject) => {
             sequelize.query("SELECT user_profile.name,user_profile.user_Id, user_profile.jobtitle,user_profile.dateofjoining,user_profile.team FROM user_profile LEFT JOIN users ON user_profile.user_Id=users.id WHERE users.status=:status ", { replacements: { status: 'Enabled' }, type: sequelize.QueryTypes.SELECT }).then((data) => {
-                //console.log(data)
                 var teams = [
                     ['Nodejs'],
                     ['AngularJs'],
@@ -62,8 +57,6 @@ export default function(sequelize, DataTypes) {
                 ];
                 var number_of_months = {};
                 _.forEach(data, function(employee) {
-
-
                     if (employee.team === "Nodejs") {
                         teams[0].push(employee);
                     }
@@ -80,9 +73,9 @@ export default function(sequelize, DataTypes) {
                         teams[4].push(employee);
                     }
                 })
-                var output = { status: 0, data: { total_teams: teams.length, teams: {} } };
+                var output = { status: 0, data: { total_teams: teams.length, teams: [] } };
                 _.forEach(teams, function(team) {
-                    var team_info = { team: team[0], count_members: (team.length - 1), members: {} };
+                    var team_info = { team: team[0], count_members: (team.length - 1), members: [] };
                     if ((team.length - 1)) {
                         var members = [];
                         _.forEach(team, function(member) {
@@ -91,33 +84,16 @@ export default function(sequelize, DataTypes) {
                                 let year = new Date(member.dateofjoining).getFullYear();
                                 let number_of_months = (12 - (month + 1)) + (new Date().getMonth() + 1) + ((new Date().getFullYear() - year - 1) * 12);
                                 var member_info = { name: member.name, dateofjoining: member.dateofjoining, number_of_months: number_of_months, jobtitle: member.jobtitle };
+                                members.push(member_info);
                             }
-                            members.push(member_info);
-                            console.log(members)
                         });
-                        //output = output.slice(0, -1);
-                        team_info.members.push(members)
-                        output.data.teams.push(team_info);
-                        console.log(teams)
+                        team_info.members = members;
                     }
-
+                    output.data.teams.push(team_info);
                 });
-                // output = output = output.slice(0, -1) + "] } }";
                 resolve(output);
-                // user_profile.findAll({
-                //     attributes: ['name', 'dateofjoining', 'jobtitle', 'team'],
-                //     include: [{
-                //         attributes: ['id', 'status'],
-                //         model: users,
-                //         where: { status: 'Enabled' }
-                //     }],
-                //     where: { user_Id: db.sequelize.col('users.id') }
-                // }).then((data) => {
-                //     console.log(data)
-                // })
             }).catch(err => reject(err))
         });
     }
-
     return user_profile;
 }
