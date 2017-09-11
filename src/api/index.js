@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import controller from "../controller";
-import multer from 'multer';
 
 export default () => {
     let api = Router({ mergeParams: true });

@@ -9,7 +9,8 @@ module.exports = {
     },
 
     approvalAction: (req, res, next) => {
-        db.manual_attendance.approveUpdatedAttendance(req.body, db, function(error, status) { //approves or decline the manual attendance request
+        let data = JSON.parse(req.body);
+        db.manual_attendance.approveUpdatedAttendance(data, db, function(error, status) { //approves or decline the manual attendance request
             if (error) {
                 next(error)
             } else {
@@ -17,4 +18,5 @@ module.exports = {
             }
         })
     }
+
 }
