@@ -4,9 +4,10 @@ export default function(sequelize, DataTypes) {
     let manual_attendance = sequelize.define('manual_attendance', { // inserting data to database of attendance
         id: { type: DataTypes.INTEGER, primaryKey: true },
         user_id: { type: DataTypes.INTEGER },
+        user_name: { type: DataTypes.STRING },
         timing: { type: DataTypes.STRING(1234) },
         reason: { type: DataTypes.STRING },
-        action: { type: DataTypes.BOOLEAN }
+        status: { type: DataTypes.BOOLEAN }
     }, {
         timestamps: false,
         freezeTableName: true
@@ -14,7 +15,7 @@ export default function(sequelize, DataTypes) {
 
     manual_attendance.manualUpdateAttendance = function() {
         return new Promise((resolve, reject) => {
-            manual_attendance.findAll({ where: { action: null } }).then((data) => { //fetch all entries in manual_attendance table which are not reviewed
+            manual_attendance.findAll({ where: { status: null } }).then((data) => { //fetch all entries in manual_attendance table which are not reviewed
                 resolve(data)
             }).catch(err => reject(err))
 
@@ -22,11 +23,11 @@ export default function(sequelize, DataTypes) {
     }
 
     manual_attendance.approveUpdatedAttendance = function(body, db, callback) {
-        manual_attendance.update({ action: body.action }, { where: { id: body.id } }).then(function(rowsAffected) { //updtaes manual_attenadance table
+        manual_attendance.update({ status: body.status }, { where: { id: body.id } }).then(function(rowsAffected) { //updtaes manual_attenadance table
             if (rowsAffected[0]) {
                 manual_attendance.find({ where: { id: body.id } }).then(function(data) {
                     if (data) {
-                        if (data.action == true) { // if approved ,data is inserted in attendance table
+                        if (data.status == true) { // if approved ,data is inserted in attendance table
                             db.attendance.create({ user_id: data.user_id, timing: data.timing }).then(function() {
                                 callback("", true);
                             })
