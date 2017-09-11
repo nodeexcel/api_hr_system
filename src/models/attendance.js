@@ -49,7 +49,7 @@ export default function(sequelize, DataTypes) {
                             if (!errorCode) { //checking for error code
                                 db.manual_attendance.create({ user_id: body.userid, timing: entryTime, reason: body.reason }).then(() => { //updating entry and exit time
                                     db.manual_attendance.create({ user_id: body.userid, timing: exitTime, reason: body.reason }).then(() => {
-                                        resolve({ "error": 0, "data": "", "success": config.success, "reason": body.reason })
+                                        resolve({ "error": 0, "data": "", "message": config.success, "reason": body.reason })
                                     }).catch(err => reject(err))
                                 })
                             }
