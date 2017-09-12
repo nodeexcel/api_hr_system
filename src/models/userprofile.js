@@ -46,9 +46,7 @@ export default function(sequelize, DataTypes) {
     });
 
     user_profile.employeeGraphStats = () => {
-        console.log("12133123")
         return new Promise((resolve, reject) => {
-            console.log("12133123")
             sequelize.query("SELECT user_profile.name,user_profile.user_Id, user_profile.jobtitle,user_profile.dateofjoining,user_profile.team FROM user_profile LEFT JOIN users ON user_profile.user_Id=users.id WHERE users.status=:status ", { replacements: { status: 'Enabled' }, type: sequelize.QueryTypes.SELECT }).then((data) => {
                 var teams = [
                     ['Nodejs'],
