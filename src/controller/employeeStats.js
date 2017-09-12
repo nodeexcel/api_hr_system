@@ -1,3 +1,5 @@
+import db from '../db';
+
 module.exports = {
 
     graphStats: (req, res, next) => {
