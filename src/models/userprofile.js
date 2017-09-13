@@ -1,8 +1,10 @@
 import _ from 'lodash';
+import moment from 'moment';
+import helper from '../helper';
 
 export default function(sequelize, DataTypes) {
 
-    var user_profile = sequelize.define('user_profile', { // inserting data to database of attendance
+    let user_profile = sequelize.define('user_profile', { // inserting data to database of attendance
         id: { type: DataTypes.INTEGER, primaryKey: true },
         name: { type: DataTypes.STRING },
         jobtitle: { type: DataTypes.STRING },
@@ -46,80 +48,15 @@ export default function(sequelize, DataTypes) {
         freezeTableName: true
     });
 
-    user_profile.employeeGraphStats = () => {
-            return new Promise((resolve, reject) => {
-                sequelize.query("SELECT user_profile.name,user_profile.user_Id, user_profile.jobtitle,user_profile.dateofjoining,user_profile.team FROM user_profile LEFT JOIN users ON user_profile.user_Id=users.id WHERE users.status=:status ", { replacements: { status: 'Enabled' }, type: sequelize.QueryTypes.SELECT }).then((data) => {
-                    var teams = [
-                        ['Nodejs'],
-                        ['AngularJs'],
-                        ['ReactJs'],
-                        ['Magento'],
-                        ['Trainee']
-                    ];
-                    var number_of_months = {};
-                    _.forEach(data, function(employee) {
-                        if (employee.team === "Nodejs") {
-                            teams[0].push(employee);
-                        }
-                        if (employee.team === "AngularJs") {
-                            teams[1].push(employee);
-                        }
-                        if (employee.team === "ReactJs") {
-                            teams[2].push(employee);
-                        }
-                        if (employee.team === "Magento") {
-                            teams[3].push(employee);
-                        }
-                        if (employee.team === "Trainee") {
-                            teams[4].push(employee);
-                        }
-                    })
-                    var output = { status: 0, data: { total_teams: teams.length, teams: [] } };
-                    _.forEach(teams, function(team) {
-                        var team_info = { team: team[0], count_members: (team.length - 1), members: [] };
-                        if ((team.length - 1)) {
-                            var members = [];
-                            _.forEach(team, function(member) {
-                                if (member != team[0]) {
-                                    let month = new Date(member.dateofjoining).getMonth();
-                                    let year = new Date(member.dateofjoining).getFullYear();
-                                    let number_of_months = (12 - (month + 1)) + (new Date().getMonth() + 1) + ((new Date().getFullYear() - year - 1) * 12);
-                                    var member_info = { name: member.name, dateofjoining: member.dateofjoining, number_of_months: number_of_months, jobtitle: member.jobtitle };
-                                    members.push(member_info);
-                                }
-                            });
-                            team_info.members = members;
-                        }
-                        output.data.teams.push(team_info);
-                    });
-                    resolve(output);
-                }).catch(err => reject(err))
-            });
-        },
-
-        user_profile.yearly_joining_termination_stats = (body) => {
-            return new Promise((resolve, reject) => {
-                var startYear;
-                var endYear;
-                user_profile.findAll({}).then((dataFetched) => {
-                    if (body.startYear && body.endYear) {
-                        startYear = body.startYear;
-                        endYear = body.endYear;
-                    } else if (body.startYear) {
-                        startYear = body.startYear;
-                        endYear = new Date().getFullYear();
-                    } else {
-                        startYear = new Date('2010-05-03').getFullYear();
-                        endYear = new Date().getFullYear()
-                    }
-                    endYear = parseInt(endYear) + 1;
-                    var arrayYear = _.range(startYear, endYear);
-                    var output = { status: 0, data: [] };
-                    var data = [];
-
+    user_profile.yearly_joining_termination_stats = (body) => {
+        return new Promise((resolve, reject) => {
+            user_profile.findAll({}).then((dataFetched) => {
+                let output = { status: 0, data: [] };
+                let data = [];
+                helper.yearArray.array_startyear_endyear(body, function(arrayYear) {
                     _.each(arrayYear, function(value) {
-                        var countJoinee = new Uint8Array(12);
-                        var countTermninted = new Uint8Array(12);
+                        let countJoinee = new Uint8Array(12);
+                        let countTermninted = new Uint8Array(12);
                         _.forEach(dataFetched, (employee) => {
                             if (new Date(employee.dateofjoining).getFullYear() == value) {
                                 countJoinee[new Date(employee.dateofjoining).getMonth()]++;
@@ -128,15 +65,14 @@ export default function(sequelize, DataTypes) {
                                 countTermninted[new Date(employee.termination_date).getMonth()]++;
                             }
                         })
-
-                        var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-                        var count = 0;
-                        var stats = [];
+                        let count = 0;
+                        let stats = [];
+                        let months = moment.months();
                         _.forEach(months, function(month) {
-                            var details = [];
+                            let details = [];
                             details.push({
-                                "No of new Joinees": countJoinee[count],
-                                "No.of Terminations": countTermninted[count]
+                                "count_joinees": countJoinee[count],
+                                "count_terminations": countTermninted[count]
                             });
                             stats.push({ Month: month, details: details });
                             count++;
@@ -146,11 +82,10 @@ export default function(sequelize, DataTypes) {
                             Stats: stats
                         })
                     });
-                    resolve({ status: 0, data: data });
-                }).catch(err => reject(err))
-
-            });
-        }
-
+                })
+                resolve({ status: 0, data: data });
+            }).catch(err => reject(err))
+        });
+    }
     return user_profile;
 }
