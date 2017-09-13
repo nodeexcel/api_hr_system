@@ -55,11 +55,9 @@ export default function(sequelize, DataTypes) {
                 })
                 user_profile.findAll({ attributes: ['name', 'jobtitle', 'dateofjoining', 'team'], where: { user_Id: { $in: enabled_userIds } } }, ).then((data) => {
                     let teams = [];
-
                     _.forEach(data, function(employee) {
                         teams.push(employee.team)
                     })
-
                     teams = teams.filter(function(elem, index, self) {
                         return index == self.indexOf(elem);
                     });
@@ -85,7 +83,6 @@ export default function(sequelize, DataTypes) {
                             }
                         })
                     }
-
                     findTeams(data, teams, function(response) {
                         let output = { status: 0, data: { total_teams: teams.length, teams: response } }
                         resolve(output)
