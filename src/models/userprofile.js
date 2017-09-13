@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 export default function(sequelize, DataTypes) {
 
-    var user_profile = sequelize.define('user_profile', { // inserting data to database of attendance
+    let user_profile = sequelize.define('user_profile', { // inserting data to database of attendance
         id: { type: DataTypes.INTEGER, primaryKey: true },
         name: { type: DataTypes.STRING },
         jobtitle: { type: DataTypes.STRING },
@@ -42,56 +42,55 @@ export default function(sequelize, DataTypes) {
         slack_msg: { type: DataTypes.INTEGER },
         unique_key: { type: DataTypes.STRING }
     }, {
-        timestamps: false
+        timestamps: false,
+        freezeTableName: true
     });
 
-    user_profile.employeeGraphStats = () => {
+    user_profile.employeeGraphStats = (db) => {
         return new Promise((resolve, reject) => {
-            sequelize.query("SELECT user_profile.name,user_profile.user_Id, user_profile.jobtitle,user_profile.dateofjoining,user_profile.team FROM user_profile LEFT JOIN users ON user_profile.user_Id=users.id WHERE users.status=:status ", { replacements: { status: 'Enabled' }, type: sequelize.QueryTypes.SELECT }).then((data) => {
-                var teams = [
-                    ['Nodejs'],
-                    ['AngularJs'],
-                    ['ReactJs'],
-                    ['Magento'],
-                    ['Trainee']
-                ];
-                var number_of_months = {};
-                _.forEach(data, function(employee) {
-                    if (employee.team === "Nodejs") {
-                        teams[0].push(employee);
-                    }
-                    if (employee.team === "AngularJs") {
-                        teams[1].push(employee);
-                    }
-                    if (employee.team === "ReactJs") {
-                        teams[2].push(employee);
-                    }
-                    if (employee.team === "Magento") {
-                        teams[3].push(employee);
-                    }
-                    if (employee.team === "Trainee") {
-                        teams[4].push(employee);
-                    }
+            db.users.findAll({ attributes: ['id'], where: { status: 'Enabled' } }).then((dataFetched) => {
+                let enabled_userIds = [];
+                _.forEach(dataFetched, function(val) {
+                    enabled_userIds.push(val.id)
                 })
-                var output = { status: 0, data: { total_teams: teams.length, teams: [] } };
-                _.forEach(teams, function(team) {
-                    var team_info = { team: team[0], count_members: (team.length - 1), members: [] };
-                    if ((team.length - 1)) {
-                        var members = [];
-                        _.forEach(team, function(member) {
-                            if (member != team[0]) {
-                                let month = new Date(member.dateofjoining).getMonth();
-                                let year = new Date(member.dateofjoining).getFullYear();
-                                let number_of_months = (12 - (month + 1)) + (new Date().getMonth() + 1) + ((new Date().getFullYear() - year - 1) * 12);
-                                var member_info = { name: member.name, dateofjoining: member.dateofjoining, number_of_months: number_of_months, jobtitle: member.jobtitle };
-                                members.push(member_info);
+                user_profile.findAll({ attributes: ['name', 'jobtitle', 'dateofjoining', 'team'], where: { user_Id: { $in: enabled_userIds } } }, ).then((data) => {
+                    let teams = [];
+
+                    _.forEach(data, function(employee) {
+                        teams.push(employee.team)
+                    })
+
+                    teams = teams.filter(function(elem, index, self) {
+                        return index == self.indexOf(elem);
+                    });
+
+                    function findTeams(data, teams, callback) {
+                        let team_data = []
+                        _.forEach(teams, (val, key) => {
+                            let members = []
+                            _.forEach(data, (val1, key1) => {
+                                if (val == val1.team) {
+                                    let month = new Date(val1.dateofjoining).getMonth();
+                                    let year = new Date(val1.dateofjoining).getFullYear();
+                                    let number_of_months = (12 - (month + 1)) + (new Date().getMonth() + 1) + ((new Date().getFullYear() - year - 1) * 12);
+                                    let member_info = { name: val1.name, dateofjoining: val1.dateofjoining, number_of_months: number_of_months, jobtitle: val1.jobtitle };
+                                    members.push(member_info);
+                                }
+                                if (key1 == data.length - 1) {
+                                    team_data.push({ name: val, count_members: members.length, member: members })
+                                }
+                            })
+                            if (key == teams.length - 1) {
+                                callback(team_data)
                             }
-                        });
-                        team_info.members = members;
+                        })
                     }
-                    output.data.teams.push(team_info);
-                });
-                resolve(output);
+
+                    findTeams(data, teams, function(response) {
+                        let output = { status: 0, data: { total_teams: teams.length, teams: response } }
+                        resolve(output)
+                    })
+                }).catch(err => reject(err))
             }).catch(err => reject(err))
         });
     }
