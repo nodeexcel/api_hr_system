@@ -26,7 +26,7 @@ export default function(sequelize, DataTypes) {
                             attendance.bulkCreate(response).then((data) => { // insert data into database
                                 fs.unlink(newpath);
                                 resolve({ "error": 0, "message": config.fileSuccessMsg, "data": "" });
-                            })
+                            }).catch(err => reject(err))
                         })
                     }
 
