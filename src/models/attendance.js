@@ -37,7 +37,7 @@ export default function(sequelize, DataTypes) {
         attendance.uploadAttendanceByUserId = (body, db) => {
             return new Promise((resolve, reject) => {
                 helper.time.timeConvertion(body.date, body.entry_time, body.exit_time, function(entryTime, exitTime) { //converts date and time in required format
-                    attendance.findAll({ where: { user_id: body.userid } }).then((data) => { //fetching all record for user id
+                    attendance.findOne({ where: { user_id: body.userid } }).then((data) => { //fetching all record for user id
                         let errorCode = 0;
                         if (data.length != 0) {
                             _.forEach(data, function(employee) {
