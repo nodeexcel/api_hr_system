@@ -48,7 +48,7 @@ export default function(sequelize, DataTypes) {
         freezeTableName: true
     });
 
-    user_profile.yearly_joining_termination_stats = (body) => {
+user_profile.yearly_joining_termination_stats = (body) => {
         return new Promise((resolve, reject) => {
             user_profile.findAll({}).then((dataFetched) => {
                 let output = { status: 0, data: [] };

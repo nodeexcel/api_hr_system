@@ -2,7 +2,7 @@ import { Router } from 'express';
 import controller from "../controller";
 
 export default () => {
-    let api = Router();
+    let api = Router({ mergeParams: true });
 
     api.route('/user/attendance/').post(controller.upload.attendance);
     api.route('/attendance/update_time_by_employee').post(controller.upload.attendanceByEmployee);
