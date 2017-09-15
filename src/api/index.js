@@ -9,6 +9,7 @@ export default () => {
     api.route('/attendance/manual/').post(controller.fetch.manualUpdatedAttendance);
     api.route('/attendance/approval').post(controller.fetch.approvalAction);
     api.route('/reports/get_team_stats').post(controller.stats.graphStats);
+    api.route('/reports/get_employee_hours').post(controller.stats.EmployeeHours);
 
     return api;
 }
