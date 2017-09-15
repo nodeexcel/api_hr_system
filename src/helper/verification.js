@@ -16,7 +16,7 @@ module.exports = {
                 callback("", "verified")
             }
         })
-        callback("HTTP/1.1 401 Unauthorized", "")
+        callback(401, "")
 
     }
 }

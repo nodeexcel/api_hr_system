@@ -6,7 +6,7 @@ module.exports = {
         helper.verify.verifyToken(req.token).then((user_id, action_list) => {
             helper.verify.verifyAction(req.action, action_list, function(err, responses) {
                 if (err) {
-                    res.json({ "error": 1, "message": err })
+                    res.status(err);
                 } else {
                     next()
                 }
