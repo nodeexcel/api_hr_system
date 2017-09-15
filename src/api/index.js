@@ -10,6 +10,7 @@ export default () => {
     api.route('/attendance/manual/').post(auth.verifyUserAction, controller.fetch.manualUpdatedAttendance);
     api.route('/attendance/approval').post(auth.verifyUserAction, controller.fetch.approvalAction);
     api.route('/reports/get_team_stats').post(auth.verifyUserAction, controller.stats.graphStats);
+    api.route('/reports/get_termination_joining_stats').post(auth.verifyUserAction, controller.stats.joiningTerminatiionStats);
 
     return api;
 }

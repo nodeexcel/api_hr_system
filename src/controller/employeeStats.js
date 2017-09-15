@@ -2,16 +2,10 @@ import db from '../db';
 
 module.exports = {
 
-    graphStats: (req, res, next) => {
-        db.user_profile.employeeGraphStats(db).then((data) => {
-            res.json(data)
-        }).catch(err => next(err))
-    },
-
-    EmployeeHours: (req, res, next) => {
-        db.attendance.get_employee_hours(req.body, db).then((data) => {
+      joiningTerminatiionStats: (req, res, next) => {
+        let data = JSON.parse(req.body);
+        db.user_profile.yearly_joining_termination_stats(data).then((data) => { //stats for yearly termination and joining
             res.json(data)
         }).catch(err => next(err))
     }
-
 }
