@@ -11,6 +11,7 @@ export default () => {
     api.route('/attendance/approval').post(auth.verifyUserAction, controller.fetch.approvalAction);
     api.route('/reports/get_team_stats').post(auth.verifyUserAction, controller.stats.graphStats);
     api.route('/reports/get_termination_joining_stats').post(auth.verifyUserAction, controller.stats.joiningTerminatiionStats);
+    api.route('/reports/get_employee_hours').post(auth.verifyUserAction, controller.stats.EmployeeHours);
 
     return api;
 }

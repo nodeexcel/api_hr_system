@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import config from '../../config.json';
+import config from '../../../config.json';
 import jwt from 'jwt-simple';
 
 module.exports = {

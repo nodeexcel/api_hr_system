@@ -48,44 +48,90 @@ export default function(sequelize, DataTypes) {
         freezeTableName: true
     });
 
-user_profile.yearly_joining_termination_stats = (body) => {
-        return new Promise((resolve, reject) => {
-            user_profile.findAll({}).then((dataFetched) => {
-                let output = { status: 0, data: [] };
-                let data = [];
-                helper.yearArray.array_startyear_endyear(body, function(arrayYear) {
-                    _.each(arrayYear, function(value) {
-                        let countJoinee = new Uint8Array(12);
-                        let countTermninted = new Uint8Array(12);
-                        _.forEach(dataFetched, (employee) => {
-                            if (new Date(employee.dateofjoining).getFullYear() == value) {
-                                countJoinee[new Date(employee.dateofjoining).getMonth()]++;
-                            }
-                            if (new Date(employee.termination_date).getFullYear() == value) {
-                                countTermninted[new Date(employee.termination_date).getMonth()]++;
-                            }
+    user_profile.employeeGraphStats = (db) => {
+            return new Promise((resolve, reject) => {
+                db.users.findAll({ attributes: ['id'], where: { status: 'Enabled' } }).then((dataFetched) => {
+                    let enabled_userIds = [];
+                    _.forEach(dataFetched, function(val) {
+                        enabled_userIds.push(val.id)
+                    })
+                    user_profile.findAll({ attributes: ['name', 'jobtitle', 'dateofjoining', 'team'], where: { user_Id: { $in: enabled_userIds } } }, ).then((data) => {
+                        let teams = [];
+                        _.forEach(data, function(employee) {
+                            teams.push(employee.team)
                         })
-                        let count = 0;
-                        let stats = [];
-                        let months = moment.months();
-                        _.forEach(months, function(month) {
-                            let details = [];
-                            details.push({
-                                "count_joinees": countJoinee[count],
-                                "count_terminations": countTermninted[count]
-                            });
-                            stats.push({ Month: month, details: details });
-                            count++;
+                        teams = teams.filter(function(elem, index, self) {
+                            return index == self.indexOf(elem);
+                        });
+
+                        function findTeams(data, teams, callback) {
+                            let team_data = []
+                            _.forEach(teams, (val, key) => {
+                                let members = []
+                                _.forEach(data, (val1, key1) => {
+                                    if (val == val1.team) {
+                                        let month = new Date(val1.dateofjoining).getMonth();
+                                        let year = new Date(val1.dateofjoining).getFullYear();
+                                        let number_of_months = (12 - (month + 1)) + (new Date().getMonth() + 1) + ((new Date().getFullYear() - year - 1) * 12);
+                                        let member_info = { name: val1.name, dateofjoining: val1.dateofjoining, number_of_months: number_of_months, jobtitle: val1.jobtitle };
+                                        members.push(member_info);
+                                    }
+                                    if (key1 == data.length - 1) {
+                                        team_data.push({ name: val, count_members: members.length, member: members })
+                                    }
+                                })
+                                if (key == teams.length - 1) {
+                                    callback(team_data)
+                                }
+                            })
+                        }
+                        findTeams(data, teams, function(response) {
+                            let output = { status: 0, data: { total_teams: teams.length, teams: response } }
+                            resolve(output)
                         })
-                        data.push({
-                            Year: value,
-                            Stats: stats
-                        })
-                    });
-                })
-                resolve({ status: 0, data: data });
-            }).catch(err => reject(err))
-        });
-    }
+                    }).catch(err => reject(err))
+                }).catch(err => reject(err))
+            });
+        },
+
+        user_profile.yearly_joining_termination_stats = (body) => {
+            return new Promise((resolve, reject) => {
+                user_profile.findAll({}).then((dataFetched) => {
+                    let output = { status: 0, data: [] };
+                    let data = [];
+                    helper.yearArray.array_startyear_endyear(body, function(arrayYear) {
+                        _.each(arrayYear, function(value) {
+                            let countJoinee = new Uint8Array(12);
+                            let countTermninted = new Uint8Array(12);
+                            _.forEach(dataFetched, (employee) => {
+                                if (new Date(employee.dateofjoining).getFullYear() == value) {
+                                    countJoinee[new Date(employee.dateofjoining).getMonth()]++;
+                                }
+                                if (new Date(employee.termination_date).getFullYear() == value) {
+                                    countTermninted[new Date(employee.termination_date).getMonth()]++;
+                                }
+                            })
+                            let count = 0;
+                            let stats = [];
+                            let months = moment.months();
+                            _.forEach(months, function(month) {
+                                let details = [];
+                                details.push({
+                                    "count_joinees": countJoinee[count],
+                                    "count_terminations": countTermninted[count]
+                                });
+                                stats.push({ Month: month, details: details });
+                                count++;
+                            })
+                            data.push({
+                                Year: value,
+                                Stats: stats
+                            })
+                        });
+                    })
+                    resolve({ status: 0, data: data });
+                }).catch(err => reject(err))
+            });
+        }
     return user_profile;
 }
