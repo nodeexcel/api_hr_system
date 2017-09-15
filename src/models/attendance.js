@@ -59,6 +59,50 @@ export default function(sequelize, DataTypes) {
                     }).catch(err => reject(err))
                 })
             })
+        },
+
+        attendance.get_employee_hours = (body, db) => {
+            return new Promise((resolve, reject) => {
+                let month = moment().month(body.month).format("M");
+                if (month / 10 == 0) {
+                    month = "0" + month;
+                }
+                attendance.findAll({
+                    where: { timing: { $regexp: month + '.*' + body.year }, user_id: body.user_id },
+                    order: [
+                        ['timing', 'DESC']
+                    ]
+                }).then((data) => {
+                    let no_of_days = (moment(body.year + "-" + month, "YYYY-MM").daysInMonth()) + 1;
+                    let days_of_month = _.range(1, no_of_days);
+                    let entryArray = [];
+                    let exitArray = [];
+                    _.forEach(days_of_month, function(day) {
+                        let entryTime = 0;
+                        let exitTime = 0;
+                        _.forEach(data, function(value) {
+                            let date = moment((value.timing).slice(0, -2)).format('DD');
+                            if (date == day) {
+                                if (entryTime) {
+                                    exitTime = new Date((value.timing).replace("PM", " PM")).getTime();
+                                } else {
+                                    entryTime = new Date((value.timing).replace("AM", " AM")).getTime();
+                                }
+                            }
+                        })
+                        entryArray.push(entryTime);
+                        exitArray.push(exitTime);
+                    })
+                    let daily_hours = [];
+                    _.forEach(days_of_month, function(day) {
+                        let diff = exitArray[day - 1] - entryArray[day - 1];
+                        diff = diff / 1000 / 60;
+                        daily_hours.push({ day: day, working_time: { hours: _.floor(diff / 60), minutes: _.ceil(diff % 60) } });
+                    })
+                    resolve({ status: 0, data: { daily_hours } })
+                })
+
+            })
         }
 
     return attendance
