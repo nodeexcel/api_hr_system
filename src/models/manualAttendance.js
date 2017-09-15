@@ -4,7 +4,6 @@ export default function(sequelize, DataTypes) {
     let manual_attendance = sequelize.define('manual_attendance', { // inserting data to database of attendance
         id: { type: DataTypes.INTEGER, primaryKey: true },
         user_id: { type: DataTypes.INTEGER },
-        user_name: { type: DataTypes.STRING },
         timing: { type: DataTypes.STRING(1234) },
         reason: { type: DataTypes.STRING },
         status: { type: DataTypes.BOOLEAN }
