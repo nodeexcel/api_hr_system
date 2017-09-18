@@ -64,7 +64,7 @@ export default function(sequelize, DataTypes) {
         attendance.get_employee_hours = (body, db) => {
             return new Promise((resolve, reject) => {
                 let month = moment().month(body.month).format("M");
-                if (month / 10 == 0) {
+                if ((month / 10) < 1) {
                     month = "0" + month;
                 }
                 attendance.findAll({
@@ -102,6 +102,27 @@ export default function(sequelize, DataTypes) {
                     resolve({ status: 0, data: { daily_hours } })
                 })
 
+            })
+        },
+
+        attendance.get_monthly_attendance = (input_month, year, user_id, callback) => {
+            let month = moment().month(input_month).format("M");
+            if ((month / 10) < 1) {
+                month = "0" + month;
+            }
+            attendance.findAll({
+                where: { timing: { $regexp: month + '.*' + year }, user_id: user_id },
+            }).then((data) => {
+                let timings = [];
+                _.forEach(data, function(value) {
+                    let str = value.timing
+                    let timing = [str.substr(0, 19), str.substr(19)].join(' ');
+                    timings.push(timing);
+                })
+                let sortData = _.sortBy(timings, function(o) {
+                    return new moment(o);
+                });
+                callback(sortData);
             })
         }
 
