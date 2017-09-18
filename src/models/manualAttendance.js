@@ -27,7 +27,7 @@ export default function(sequelize, DataTypes) {
                 manual_attendance.find({ where: { id: body.id } }).then(function(data) {
                     if (data) {
                         if (data.status == true) { // if approved ,data is inserted in attendance table
-                            db.attendance.create({ user_id: data.user_id, timing: data.timing }).then(function() {
+                            db.attendance.create({ id: 0, user_id: data.user_id, timing: data.timing }).then(function() {
                                 callback("", true);
                             })
                         } else {
