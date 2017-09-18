@@ -99,7 +99,7 @@ export default function(sequelize, DataTypes) {
                         diff = diff / 1000 / 60;
                         daily_hours.push({ day: day, working_time: { hours: _.floor(diff / 60), minutes: _.ceil(diff % 60) } });
                     })
-                    resolve({ status: 0, data: { daily_hours } })
+                    resolve({ error: 0, data: daily_hours })
                 })
 
             })
