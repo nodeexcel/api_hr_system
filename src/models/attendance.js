@@ -63,16 +63,7 @@ export default function(sequelize, DataTypes) {
 
         attendance.get_employee_hours = (body, db) => {
             return new Promise((resolve, reject) => {
-                let month = moment().month(body.month).format("M");
-                if (month / 10 == 0) {
-                    month = "0" + month;
-                }
-                attendance.findAll({
-                    where: { timing: { $regexp: month + '.*' + body.year }, user_id: body.user_id },
-                    order: [
-                        ['timing', 'DESC']
-                    ]
-                }).then((data) => {
+                attendance.get_monthly_attendance(body.month, body.year, emp.id, function(data) {
                     let no_of_days = (moment(body.year + "-" + month, "YYYY-MM").daysInMonth()) + 1;
                     let days_of_month = _.range(1, no_of_days);
                     let entryArray = [];
@@ -83,10 +74,12 @@ export default function(sequelize, DataTypes) {
                         _.forEach(data, function(value) {
                             let date = moment((value.timing).slice(0, -2)).format('DD');
                             if (date == day) {
+                                let str = value.timing
+                                let timing = [str.substr(0, 19), str.substr(19)].join(' ');
                                 if (entryTime) {
-                                    exitTime = new Date((value.timing).replace("PM", " PM")).getTime();
+                                    exitTime = new Date((timing)).getTime();
                                 } else {
-                                    entryTime = new Date((value.timing).replace("AM", " AM")).getTime();
+                                    entryTime = new Date(timing).getTime();
                                 }
                             }
                         })
@@ -95,6 +88,7 @@ export default function(sequelize, DataTypes) {
                     })
                     let daily_hours = [];
                     _.forEach(days_of_month, function(day) {
+
                         let diff = exitArray[day - 1] - entryArray[day - 1];
                         diff = diff / 1000 / 60;
                         daily_hours.push({ day: day, working_time: { hours: _.floor(diff / 60), minutes: _.ceil(diff % 60) } });
@@ -102,6 +96,27 @@ export default function(sequelize, DataTypes) {
                     resolve({ error: 0, data: daily_hours })
                 })
 
+            })
+        },
+
+        attendance.get_monthly_attendance = (input_month, year, user_id, callback) => {
+            let month = moment().month(input_month).format("M");
+            if ((month / 10) < 1) {
+                month = "0" + month;
+            }
+            attendance.findAll({
+                where: { timing: { $regexp: month + '.*' + year }, user_id: user_id },
+            }).then((data) => {
+                let timings = [];
+                _.forEach(data, function(value) {
+                    let str = value.timing
+                    let timing = [str.substr(0, 19), str.substr(19)].join(' ');
+                    timings.push(timing);
+                })
+                let sortData = _.sortBy(timings, function(o) {
+                    return new moment(o);
+                });
+                callback(sortData);
             })
         }
 

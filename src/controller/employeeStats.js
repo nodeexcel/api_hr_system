@@ -1,4 +1,5 @@
 import db from '../db';
+import helper from '../helper';
 
 module.exports = {
 
@@ -18,6 +19,13 @@ module.exports = {
     EmployeeHours: (req, res, next) => {
         let data = JSON.parse(req.body);
         db.attendance.get_employee_hours(data, db).then((data) => {
+            res.json(data)
+        }).catch(err => next(err))
+    },
+
+    monthlyReport: (req, res, next) => {
+        let data = JSON.parse(req.body);
+        helper.monthly_reports.working_time_calculations(data, db).then((data) => {
             res.json(data)
         }).catch(err => next(err))
     }
