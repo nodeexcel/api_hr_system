@@ -11,5 +11,11 @@ export default function(sequelize, DataTypes) {
         freezeTableName: true
     });
 
+    users.get_enabled_users = (callback) => {
+        users.findAll({ where: { status: "Enabled" } }).then((data) => {
+            callback(data)
+        })
+    }
+
     return users;
 }

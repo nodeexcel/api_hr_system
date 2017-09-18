@@ -40,12 +40,12 @@ module.exports = {
                                 }
                             })
                             daily.push({
-                                day: (day + "-" + body.month),
+                                day: (day + " " + moment(month, 'MM').format('MMMM')),
                                 total_hours: { hours: _.floor(((exitTime - start_entry) / 3600000) % 24), minutes: _.floor(((exitTime - start_entry) / 60000) % 60) },
                                 active_hours: { hours: _.floor((active_hours / 3600000) % 24), minutes: _.floor(((active_hours) / 60000) % 60) }
                             })
                         });
-                        employee.push({ Name: emp.id, day_wise_detail: daily });
+                        employee.push({ user_id: emp.id, day_wise_detail: daily });
                         data.push(employee);
                         output = { status: 0, data: data };
                         if (count == Object.keys(enabled_users).length) {
