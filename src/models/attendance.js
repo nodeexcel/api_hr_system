@@ -96,7 +96,8 @@ export default function(sequelize, DataTypes) {
                             working_time: { hours: _.floor(diff / 60), minutes: _.ceil(diff % 60) },
                             total_time: _.floor(diff / 60) + "." + ((_.ceil(diff % 60) * 5) / 3)
                         });
-                    }) resolve({ error: 0, message: "", data: daily_hours })
+                    });
+                    resolve({ error: 0, message: "", data: daily_hours })
                 })
 
             })
