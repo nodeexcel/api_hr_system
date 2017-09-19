@@ -86,7 +86,7 @@ export default function(sequelize, DataTypes) {
                             })
                         }
                         findTeams(data, teams, function(response) {
-                            let output = { status: 0, data: { total_teams: teams.length, teams: response } }
+                            let output = { error: 0, message: "", data: { total_teams: teams.length, teams: response } }
                             resolve(output)
                         })
                     }).catch(err => reject(err))
@@ -97,7 +97,6 @@ export default function(sequelize, DataTypes) {
         user_profile.yearly_joining_termination_stats = (body) => {
             return new Promise((resolve, reject) => {
                 user_profile.findAll({}).then((dataFetched) => {
-                    let output = { status: 0, data: [] };
                     let data = [];
                     helper.yearArray.array_startyear_endyear(body, function(arrayYear) {
                         _.each(arrayYear, function(value) {
@@ -129,7 +128,7 @@ export default function(sequelize, DataTypes) {
                             })
                         });
                     })
-                    resolve({ status: 0, data: data });
+                    resolve({ error: 0, message: "", data: data });
                 }).catch(err => reject(err))
             });
         }

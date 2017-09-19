@@ -10,7 +10,6 @@ module.exports = {
                 let data = [];
                 let count = 1;
                 _.forEach(enabled_users, function(emp) {
-                    let employee = [];
                     db.attendance.get_monthly_attendance(body.month, body.year, emp.id, function(monthly_data) { //time array for a id
                         let month = moment().month(body.month).format("M");
                         let no_of_days = (moment(body.year + "-" + month, "YYYY-MM").daysInMonth()) + 1;
@@ -45,9 +44,8 @@ module.exports = {
                                 active_hours: { hours: _.floor((active_hours / 3600000) % 24), minutes: _.floor(((active_hours) / 60000) % 60) }
                             })
                         });
-                        employee.push({ user_id: emp.id, day_wise_detail: daily });
-                        data.push(employee);
-                        output = { status: 0, data: data };
+                        data.push({ user_id: emp.id, day_wise_detail: daily });
+                        output = { error: 0, message: "", data: data };
                         if (count == Object.keys(enabled_users).length) {
                             resolve(output)
                         } else {

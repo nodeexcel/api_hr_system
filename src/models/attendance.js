@@ -91,9 +91,12 @@ export default function(sequelize, DataTypes) {
 
                         let diff = exitArray[day - 1] - entryArray[day - 1];
                         diff = diff / 1000 / 60;
-                        daily_hours.push({ day: day, working_time: { hours: _.floor(diff / 60), minutes: _.ceil(diff % 60) } });
-                    })
-                    resolve({ error: 0, data: daily_hours })
+                        daily_hours.push({
+                            day: day,
+                            working_time: { hours: _.floor(diff / 60), minutes: _.ceil(diff % 60) },
+                            total_time: _.floor(diff / 60) + "." + ((_.ceil(diff % 60) * 5) / 3)
+                        });
+                    }) resolve({ error: 0, message: "", data: daily_hours })
                 })
 
             })
