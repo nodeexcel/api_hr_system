@@ -63,8 +63,8 @@ export default function(sequelize, DataTypes) {
 
         attendance.get_employee_hours = (body, db) => {
             return new Promise((resolve, reject) => {
-                attendance.get_monthly_attendance(body.month, body.year, emp.id, function(data) {
-                    let no_of_days = (moment(body.year + "-" + month, "YYYY-MM").daysInMonth()) + 1;
+                attendance.get_monthly_attendance(body.month, body.year, body.user_id, function(data) {
+                    let no_of_days = (moment(body.year + "-" + body.month, "YYYY-MM").daysInMonth()) + 1;
                     let days_of_month = _.range(1, no_of_days);
                     let entryArray = [];
                     let exitArray = [];
@@ -72,9 +72,9 @@ export default function(sequelize, DataTypes) {
                         let entryTime = 0;
                         let exitTime = 0;
                         _.forEach(data, function(value) {
-                            let date = moment((value.timing).slice(0, -2)).format('DD');
+                            let str = value;
+                            let date = moment([str.substr(0, 19), str.substr(19)].join(' ')).format('DD');
                             if (date == day) {
-                                let str = value.timing
                                 let timing = [str.substr(0, 19), str.substr(19)].join(' ');
                                 if (entryTime) {
                                     exitTime = new Date((timing)).getTime();
