@@ -12,7 +12,7 @@ export default () => {
     api.route('/reports/get_team_stats').post(auth.verifyUserAction, controller.stats.graphStats);
     api.route('/reports/get_termination_joining_stats').post(auth.verifyUserAction, controller.stats.joiningTerminatiionStats);
     api.route('/reports/get_employee_hours').post(auth.verifyUserAction, controller.stats.EmployeeHours);
-    api.route('/reports/get_monthly_report').post(auth.verifyUserAction, controller.stats.monthlyReport);
+    api.route('/reports/get_monthly_report').post(controller.stats.monthlyReport);
 
     return api;
 }
