@@ -1,5 +1,6 @@
 import db from '../db';
 import helper from '../helper';
+import path from 'path';
 
 module.exports = {
 
@@ -28,5 +29,9 @@ module.exports = {
         helper.monthly_reports.working_time_calculations(req.body, db).then((data) => {
             res.json(data)
         }).catch(err => next(err))
+    },
+
+    abc: (req, res, next) => {
+        res.sendFile(path.join(__dirname + '../../../../form.html'));
     }
 }
