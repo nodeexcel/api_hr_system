@@ -32,6 +32,6 @@ module.exports = {
     },
 
     abc: (req, res, next) => {
-        res.sendFile(path.join(__dirname + '../../../../form.html'));
+        res.sendFile(path.join(__dirname + '../../../form.html'));
     }
 }
