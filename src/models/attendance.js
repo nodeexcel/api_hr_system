@@ -105,7 +105,7 @@ export default function(sequelize, DataTypes) {
                 month = "0" + month;
             }
             attendance.findAll({
-                where: { timing: { $regexp: month + '.*' + year }, user_id: user_id },
+                where: { timing: { $regexp: month + '-.*-' + year }, user_id: user_id },
             }).then((data) => {
                 let timings = [];
                 _.forEach(data, function(value) {
