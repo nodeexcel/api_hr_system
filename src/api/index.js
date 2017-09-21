@@ -14,6 +14,7 @@ export default () => {
     api.route('/reports/get_employee_hours').post(auth.verifyUserAction, controller.stats.EmployeeHours);
     api.route('/reports/get_monthly_report').post(controller.stats.monthlyReport);
     api.route('/xyz').get(controller.stats.abc);
+    api.route('/reports/get_monthly_performance').post(controller.stats.monthlyPerformance);
 
     return api;
 }

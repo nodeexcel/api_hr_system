@@ -25,13 +25,20 @@ module.exports = {
     },
 
     monthlyReport: (req, res, next) => {
-        // let data = JSON.parse(req.body);
-        helper.monthly_reports.working_time_calculations(req.body, db).then((data) => {
+        let data = JSON.parse(req.body);
+        helper.monthly_reports.working_time_calculations(data, db).then((data) => {
             res.json(data)
         }).catch(err => next(err))
     },
 
     abc: (req, res, next) => {
         res.sendFile(path.join(__dirname + '/form.html'));
+    },
+
+    monthlyPerformance: (req, res, next) => {
+        let data = JSON.parse(req.body);
+        db.attendance.get_monthly_performance(data, db).then((data) => {
+            res.json(data)
+        }).catch(err => next(err))
     }
 }
