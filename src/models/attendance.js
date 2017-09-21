@@ -126,7 +126,7 @@ export default function(sequelize, DataTypes) {
 
         attendance.get_monthly_performance = (body, db) => {
             return new Promise((resolve, reject) => {
-                attendance.get_monthly_performance1(body, db, function(totalHrs, activeHrs) {
+                attendance.get_enabled_users_performance(body, db, function(totalHrs, activeHrs) {
                     let month = moment().month(body.month).format("M");
                     let no_of_days = (moment(body.year + "-" + month, "YYYY-MM").daysInMonth()) + 1;
                     let days_of_month = _.range(1, no_of_days);
@@ -157,7 +157,7 @@ export default function(sequelize, DataTypes) {
             });
         },
 
-        attendance.get_monthly_performance1 = (body, db, callback) => {
+        attendance.get_enabled_users_performance = (body, db, callback) => {
             return new Promise((resolve, reject) => {
                 let activeHrsFinal = [];
                 let totalHrsFinal = [];
