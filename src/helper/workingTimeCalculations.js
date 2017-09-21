@@ -37,8 +37,8 @@ module.exports = {
                     })
                     daily.push({
                         day: (day + " " + moment(month, 'MM').format('MMMM')),
-                        total_hours: { hours: _.floor(((exitTime - start_entry) / 3600000) % 24), minutes: _.floor(((exitTime - start_entry) / 60000) % 60) },
-                        active_hours: { hours: _.floor((active_hours / 3600000) % 24), minutes: _.floor(((active_hours) / 60000) % 60) }
+                        total_hours: { hours: _.floor(((exitTime - start_entry) / 3600000) % 24), minutes: _.floor(((exitTime - start_entry) / 60000) % 60), total_time: _.floor(((exitTime - start_entry) / 3600000) % 24) + "." + _.floor((_.floor(((exitTime - start_entry) / 60000) % 60) * 5) / 3) },
+                        active_hours: { hours: _.floor((active_hours / 3600000) % 24), minutes: _.floor(((active_hours) / 60000) % 60), total_time: _.floor((active_hours / 3600000) % 24) + "." + _.floor((_.floor(((active_hours) / 60000) % 60) * 5) / 3) }
                     })
                 });
                 data.push({ user_id: body.user_id, day_wise_detail: daily });
@@ -47,5 +47,27 @@ module.exports = {
             })
 
         })
+    },
+
+    get_monthly_attendance: (date, user_id, callback) => {
+        let month = moment().month(input_month).format("M");
+        if ((month / 10) < 1) {
+            month = "0" + month;
+        }
+        attendance.findAll({
+            where: { timing: { $regexp: date + '.*' }, user_id: user_id },
+        }).then((data) => {
+            let timings = [];
+            _.forEach(data, function(value) {
+                let str = value.timing
+                let timing = [str.substr(0, 19), str.substr(19)].join(' ');
+                timings.push(timing);
+            })
+            let sortData = _.sortBy(timings, function(o) {
+                return new moment(o);
+            });
+            callback(sortData);
+        })
+
     },
 }
