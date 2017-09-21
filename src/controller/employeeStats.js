@@ -25,8 +25,8 @@ module.exports = {
     },
 
     monthlyReport: (req, res, next) => {
-        // let data = JSON.parse(req.body);
-        helper.monthly_reports.working_time_calculations(req.body, db).then((data) => {
+        let data = JSON.parse(req.body);
+        helper.monthly_reports.working_time_calculations(data, db).then((data) => {
             res.json(data)
         }).catch(err => next(err))
     },
