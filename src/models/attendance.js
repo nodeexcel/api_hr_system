@@ -134,23 +134,23 @@ export default function(sequelize, DataTypes) {
                     let performance = [];
 
                     _.forEach(days_of_month, function(day) {
-                        let xx = [];
-                        let yy = [];
+                        let day_wise_total_hrs = [];
+                        let day_wise_active_hrs = [];
                         let sortTotalTime;
                         let sortActiveTime;
                         _.forEach(totalHrs, function(val, key) {
-                            xx.push({ user_id: val.user_id, hours: val.hours[day - 1] })
+                            day_wise_total_hrs.push({ username: val.username, hours: val.hours[day - 1] })
                             if (key == (totalHrs.length - 1)) {
-                                sortTotalTime = _.orderBy(xx, ['hours'], ['desc']);
+                                sortTotalTime = _.orderBy(day_wise_total_hrs, ['hours'], ['desc']);
                             }
                         });
                         _.forEach(activeHrs, function(val, key) {
-                            yy.push({ user_id: val.user_id, hours: val.hours[day - 1] })
+                            day_wise_active_hrs.push({ username: val.username, hours: val.hours[day - 1] })
                             if (key == (activeHrs.length - 1)) {
-                                sortActiveTime = _.orderBy(yy, ['hours'], ['desc']);
+                                sortActiveTime = _.orderBy(day_wise_active_hrs, ['hours'], ['desc']);
                             }
                         });
-                        performance.push({ day: day, top_total_hrs: { user_id: sortTotalTime[0].user_id, hours: sortTotalTime[0].hours }, top_active_hrs: { user_id: sortActiveTime[0].user_id, hours: sortActiveTime[0].hours } })
+                        performance.push({ day: day, top_total_hrs: { username: sortTotalTime[0].username, hours: sortTotalTime[0].hours }, top_active_hrs: { username: sortActiveTime[0].username, hours: sortActiveTime[0].hours } })
                     });
                     resolve({ error: 0, message: "", data: performance });
                 });
@@ -161,7 +161,6 @@ export default function(sequelize, DataTypes) {
             return new Promise((resolve, reject) => {
                 let activeHrsFinal = [];
                 let totalHrsFinal = [];
-                let count = 1;
                 db.users.get_enabled_users(function(enabled_users) {
                     _.forEach(enabled_users, function(emp, key) {
                         body.user_id = emp.id;
@@ -173,11 +172,10 @@ export default function(sequelize, DataTypes) {
                                 _.forEach(value.day_wise_detail, function(val) {
                                     totalHrs.push(val.total_hours.total_time);
                                     activeHrs.push(val.active_hours.total_time);
-                                    count++;
                                 });
                             });
-                            activeHrsFinal.push({ user_id: emp.id, hours: activeHrs });
-                            totalHrsFinal.push({ user_id: emp.id, hours: totalHrs });
+                            activeHrsFinal.push({ username: emp.username, hours: activeHrs });
+                            totalHrsFinal.push({ username: emp.username, hours: totalHrs });
                             if (key == enabled_users.length - 1) {
                                 callback(totalHrsFinal, activeHrsFinal)
                             }
