@@ -8,7 +8,7 @@ module.exports = {
             let output;
             let data = [];
             db.attendance.get_monthly_attendance(body.month, body.year, body.user_id, function(monthly_data) { //time array for a id
-                let month = moment().month(body.month).format("M");
+                let month = new Date(Date.parse(body.month + " 1, 2012")).getMonth() + 1;
                 let no_of_days = (moment(body.year + "-" + month, "YYYY-MM").daysInMonth()) + 1;
                 let days_of_month = _.range(1, no_of_days);
                 let daily = [];
@@ -44,7 +44,6 @@ module.exports = {
                 data.push({ user_id: body.user_id, day_wise_detail: daily });
                 output = { error: 0, message: "", data: data };
                 resolve(output)
-
             })
 
         })
@@ -69,5 +68,6 @@ module.exports = {
             });
             callback(sortData);
         })
+
     },
 }
