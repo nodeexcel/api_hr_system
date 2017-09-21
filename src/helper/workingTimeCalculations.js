@@ -11,7 +11,7 @@ module.exports = {
                 let count = 1;
                 _.forEach(enabled_users, function(emp) {
                     db.attendance.get_monthly_attendance(body.month, body.year, emp.id, function(monthly_data) { //time array for a id
-                        let month = moment().month(body.month).format("M");
+                        let month = moment().month(body.month, "MM");
                         let no_of_days = (moment(body.year + "-" + month, "YYYY-MM").daysInMonth()) + 1;
                         let days_of_month = _.range(1, no_of_days);
                         let daily = [];

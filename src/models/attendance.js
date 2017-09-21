@@ -104,7 +104,7 @@ export default function(sequelize, DataTypes) {
         },
 
         attendance.get_monthly_attendance = (input_month, year, user_id, callback) => {
-            let month = moment().month(input_month).format("M");
+            let month = new Date(Date.parse(input_month + " 1, 2012")).getMonth() + 1;
             if ((month / 10) < 1) {
                 month = "0" + month;
             }
