@@ -92,7 +92,7 @@ export default function(sequelize, DataTypes) {
                         let diff = exitArray[day - 1] - entryArray[day - 1];
                         diff = diff / 1000 / 60;
                         daily_hours.push({
-                            day: day,
+                            day: day + " " + body.month,
                             working_time: { hours: _.floor(diff / 60), minutes: _.ceil(diff % 60) },
                             total_time: _.floor(diff / 60) + "." + _.floor((_.ceil(diff % 60) * 5) / 3)
                         });
@@ -150,7 +150,7 @@ export default function(sequelize, DataTypes) {
                                 sortActiveTime = _.orderBy(day_wise_active_hrs, ['hours'], ['desc']);
                             }
                         });
-                        performance.push({ day: day, top_total_hrs: { username: sortTotalTime[0].username, hours: sortTotalTime[0].hours }, top_active_hrs: { username: sortActiveTime[0].username, hours: sortActiveTime[0].hours } })
+                        performance.push({ day: (day + " " + moment(month, 'MM').format('MMMM')), top_total_hrs: { username: sortTotalTime[0].username, hours: sortTotalTime[0].hours }, top_active_hrs: { username: sortActiveTime[0].username, hours: sortActiveTime[0].hours } })
                     });
                     resolve({ error: 0, message: "", data: performance });
                 });
