@@ -131,6 +131,14 @@ export default function(sequelize, DataTypes) {
                     resolve({ error: 0, message: "", data: data });
                 }).catch(err => reject(err))
             });
+        },
+
+        user_profile.user_list = () => {
+            return new Promise((resolve, reject) => {
+                user_profile.findAll({ attributes: ['id', 'name'] }).then((dataFetched) => {
+                    resolve({ error: 0, message: "", data: dataFetched })
+                })
+            })
         }
     return user_profile;
 }

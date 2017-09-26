@@ -40,5 +40,11 @@ module.exports = {
         db.attendance.get_monthly_performance(data, db).then((data) => {
             res.json(data)
         }).catch(err => next(err))
+    },
+
+    list: (req, res, next) => {
+        db.user_profile.user_list().then((data) => { // uploads attendance  by employees in manual_attenance table
+            res.json(data)
+        }).catch(err => next(err))
     }
 }
