@@ -92,7 +92,7 @@ export default function(sequelize, DataTypes) {
                         let diff = exitArray[day - 1] - entryArray[day - 1];
                         diff = diff / 1000 / 60;
                         daily_hours.push({
-                            day: day,
+                            day: day + " " + body.month,
                             working_time: { hours: _.floor(diff / 60), minutes: _.ceil(diff % 60) },
                             total_time: _.floor(diff / 60) + "." + _.floor((_.ceil(diff % 60) * 5) / 3)
                         });
@@ -122,7 +122,69 @@ export default function(sequelize, DataTypes) {
                 });
                 callback(sortData);
             })
+        },
+
+        attendance.get_monthly_performance = (body, db) => {
+            return new Promise((resolve, reject) => {
+                attendance.get_enabled_users_performance(body, db, function(totalHrs, activeHrs) {
+                    let month = moment().month(body.month).format("M");
+                    let no_of_days = (moment(body.year + "-" + month, "YYYY-MM").daysInMonth()) + 1;
+                    let days_of_month = _.range(1, no_of_days);
+                    let daily = [];
+                    let performance = [];
+
+                    _.forEach(days_of_month, function(day) {
+                        let day_wise_total_hrs = [];
+                        let day_wise_active_hrs = [];
+                        let sortTotalTime;
+                        let sortActiveTime;
+                        _.forEach(totalHrs, function(val, key) {
+                            day_wise_total_hrs.push({ username: val.username, hours: val.hours[day - 1] })
+                            if (key == (totalHrs.length - 1)) {
+                                sortTotalTime = _.orderBy(day_wise_total_hrs, ['hours'], ['desc']);
+                            }
+                        });
+                        _.forEach(activeHrs, function(val, key) {
+                            day_wise_active_hrs.push({ username: val.username, hours: val.hours[day - 1] })
+                            if (key == (activeHrs.length - 1)) {
+                                sortActiveTime = _.orderBy(day_wise_active_hrs, ['hours'], ['desc']);
+                            }
+                        });
+                        performance.push({ day: (day + " " + moment(month, 'MM').format('MMMM')), top_total_hrs: { username: sortTotalTime[0].username, hours: sortTotalTime[0].hours }, top_active_hrs: { username: sortActiveTime[0].username, hours: sortActiveTime[0].hours } })
+                    });
+                    resolve({ error: 0, message: "", data: performance });
+                });
+            });
+        },
+
+        attendance.get_enabled_users_performance = (body, db, callback) => {
+            return new Promise((resolve, reject) => {
+                let activeHrsFinal = [];
+                let totalHrsFinal = [];
+                db.users.get_enabled_users(function(enabled_users) {
+                    _.forEach(enabled_users, function(emp, key) {
+                        body.user_id = emp.id;
+                        let activeHrs = [];
+                        let totalHrs = [];
+                        helper.monthly_reports.working_time_calculations(body, db).then((data) => {
+                            let monthlydetail = data.data;
+                            _.forEach(monthlydetail, function(value) {
+                                _.forEach(value.day_wise_detail, function(val) {
+                                    totalHrs.push(val.total_hours.total_time);
+                                    activeHrs.push(val.active_hours.total_time);
+                                });
+                            });
+                            activeHrsFinal.push({ username: emp.username, hours: activeHrs });
+                            totalHrsFinal.push({ username: emp.username, hours: totalHrs });
+                            if (key == enabled_users.length - 1) {
+                                callback(totalHrsFinal, activeHrsFinal)
+                            }
+                        })
+                    })
+                })
+            })
         }
+
 
     return attendance
 }

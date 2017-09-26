@@ -33,5 +33,12 @@ module.exports = {
 
     abc: (req, res, next) => {
         res.sendFile(path.join(__dirname + '/form.html'));
+    },
+
+    monthlyPerformance: (req, res, next) => {
+        let data = JSON.parse(req.body);
+        db.attendance.get_monthly_performance(data, db).then((data) => {
+            res.json(data)
+        }).catch(err => next(err))
     }
 }
