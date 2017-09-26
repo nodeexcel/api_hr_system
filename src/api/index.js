@@ -5,6 +5,7 @@ export default () => {
     let api = Router({ mergeParams: true });
 
     api.route('/user/attendance/').post(controller.upload.attendance);
+    api.route('/user/get_user_list/').post(controller.stats.list);
     api.route('/attendance/update_time_by_employee').post(controller.upload.attendanceByEmployee);
     api.route('/attendance/manual/').post(controller.fetch.manualUpdatedAttendance);
     api.route('/attendance/approval').post(controller.fetch.approvalAction);
