@@ -13,10 +13,10 @@ let upload = multer();
 
 let app = express();
 //app.server = http.createServer(app);
-var hskey = fs.readFileSync('../hr.key');
-var hscert = fs.readFileSync('../hr.crt')
+let hskey = fs.readFile('hr.key', 'utf8');
+let hscert = fs.readFile('hr.crt', 'utf8');
 
-var options = {
+let options = {
     key: hskey,
     cert: hscert
 };
