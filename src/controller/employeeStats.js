@@ -5,7 +5,9 @@ import path from 'path';
 module.exports = {
 
     graphStats: (req, res, next) => {
+        console.log("116")
         db.user_profile.employeeGraphStats(db).then((data) => { // uploads attendance  by employees in manual_attenance table
+            console.log("117")
             res.json(data)
         }).catch(err => next(err))
     },
