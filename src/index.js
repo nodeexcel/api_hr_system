@@ -12,7 +12,7 @@ import multer from 'multer';
 let upload = multer();
 
 let app = express();
-//app.server = http.createServer(app);
+app.server = http.createServer(app);
 let hskey = fs.readFile('hr.key', 'utf8');
 let hscert = fs.readFile('hr.crt', 'utf8');
 
@@ -20,7 +20,7 @@ let options = {
     key: hskey,
     cert: hscert
 };
-app.server = https.createServer(options, app);
+app.servers = https.createServer(options, app);
 app.use(morgan('dev'));
 
 app.use(cors({
@@ -55,3 +55,7 @@ function errorHandler(err, req, res, next) {
 app.server.listen(process.env.PORT || config.port, () => {
     console.log(`Started on port ${app.server.address().port}`);
 });
+https.createServer({
+    key: fs.readFileSync('hr.key'),
+    cert: fs.readFileSync('hr.crt')
+}, app).listen(3019);
