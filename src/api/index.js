@@ -3,7 +3,7 @@ import controller from "../controller";
 
 export default () => {
     let api = Router({ mergeParams: true });
-
+    console.log("114")
     api.route('/user/attendance/').post(controller.upload.attendance);
     api.route('/user/get_user_list/').post(controller.stats.list);
     api.route('/attendance/update_time_by_employee').post(controller.upload.attendanceByEmployee);
@@ -15,6 +15,6 @@ export default () => {
     api.route('/reports/get_monthly_report').post(controller.stats.monthlyReport);
     api.route('/xyz').get(controller.stats.abc);
     api.route('/reports/get_monthly_performance').post(controller.stats.monthlyPerformance);
-
+    console.log("115")
     return api;
 }

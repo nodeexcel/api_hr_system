@@ -55,7 +55,9 @@ function errorHandler(err, req, res, next) {
 app.server.listen(process.env.PORT || config.port, () => {
     console.log(`Started on port ${app.server.address().port}`);
 });
+console.log("112")
 https.createServer({
     key: fs.readFileSync('hr.key'),
     cert: fs.readFileSync('hr.crt')
 }, app).listen(3019);
+console.log("113")
