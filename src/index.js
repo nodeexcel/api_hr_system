@@ -7,13 +7,20 @@ import bodyParser from 'body-parser';
 import db from './db.js';
 import api from './api';
 import config from '../../config.json';
+import fs from 'fs';
 import multer from 'multer';
 let upload = multer();
 
 let app = express();
-app.server = http.createServer(app);
-app.server = https.createServer({ key: '../hr.key', cert: '../hr.crt' }, app);
+//app.server = http.createServer(app);
+var hskey = fs.readFileSync('../hr.key');
+var hscert = fs.readFileSync('../hr.crt')
 
+var options = {
+    key: hskey,
+    cert: hscert
+};
+app.server = https.createServer(options, app);
 app.use(morgan('dev'));
 
 app.use(cors({
