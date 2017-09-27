@@ -49,7 +49,6 @@ export default function(sequelize, DataTypes) {
     });
 
     user_profile.employeeGraphStats = (db) => {
-            console.log("118")
             return new Promise((resolve, reject) => {
                 db.users.findAll({ attributes: ['id'], where: { status: 'Enabled' } }).then((dataFetched) => {
                     let enabled_userIds = [];
