@@ -1,4 +1,5 @@
 import http from 'http';
+import https from 'https';
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -11,6 +12,7 @@ let upload = multer();
 
 let app = express();
 app.server = http.createServer(app);
+app.server = https.createServer({ key: '../hr.key', cert: '../hr.crt' }, app);
 
 app.use(morgan('dev'));
 
