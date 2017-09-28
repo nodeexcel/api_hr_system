@@ -11,22 +11,19 @@ module.exports = {
     },
 
     joiningTerminatiionStats: (req, res, next) => {
-        let data = JSON.parse(req.body);
-        db.user_profile.yearly_joining_termination_stats(data).then((data) => { //stats for yearly termination and joining
+        db.user_profile.yearly_joining_termination_stats(req.body).then((data) => { //stats for yearly termination and joining
             res.json(data)
         }).catch(err => next(err))
     },
 
     EmployeeHours: (req, res, next) => {
-        let data = JSON.parse(req.body);
-        db.attendance.get_employee_hours(data, db).then((data) => {
+        db.attendance.get_employee_hours(req.body, db).then((data) => {
             res.json(data)
         }).catch(err => next(err))
     },
 
     monthlyReport: (req, res, next) => {
-        let data = JSON.parse(req.body);
-        helper.monthly_reports.working_time_calculations(data, db).then((data) => {
+        helper.monthly_reports.working_time_calculations(req.body, db).then((data) => {
             res.json(data)
         }).catch(err => next(err))
     },
@@ -36,8 +33,7 @@ module.exports = {
     },
 
     monthlyPerformance: (req, res, next) => {
-        let data = JSON.parse(req.body);
-        db.attendance.get_monthly_performance(data, db).then((data) => {
+        db.attendance.get_monthly_performance(req.body, db).then((data) => {
             res.json(data)
         }).catch(err => next(err))
     },
