@@ -96,7 +96,7 @@ export default function(sequelize, DataTypes) {
 
         user_profile.yearly_joining_termination_stats = (body) => {
             return new Promise((resolve, reject) => {
-                user_profile.findAll({}).then((dataFetched) => {
+                user_profile.findAll({ attributes: ['dateofjoining', 'termination_date'] }).then((dataFetched) => {
                     let data = [];
                     helper.yearArray.array_startyear_endyear(body, function(arrayYear) {
                         _.each(arrayYear, function(value) {
