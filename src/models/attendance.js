@@ -163,10 +163,9 @@ export default function(sequelize, DataTypes) {
                 let totalHrsFinal = [];
                 db.users.get_enabled_users(function(enabled_users) {
                     _.forEach(enabled_users, function(emp, key) {
-                        body.user_id = emp.id;
                         let activeHrs = [];
                         let totalHrs = [];
-                        helper.monthly_reports.working_time_calculations(body, db).then((data) => {
+                        helper.monthly_reports.working_time_calculations(body, emp.id, db).then((data) => {
                             let monthlydetail = data.data;
                             _.forEach(monthlydetail, function(value) {
                                 _.forEach(value.day_wise_detail, function(val) {

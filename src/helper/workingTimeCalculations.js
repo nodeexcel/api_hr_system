@@ -3,11 +3,14 @@ import db from '../db';
 import _ from 'lodash';
 
 module.exports = {
-    working_time_calculations: function(body) {
+    working_time_calculations: function(body, userid) {
         return new Promise((resolve, reject) => {
+            if (body.user_id) {
+                userid = body.user_id;
+            }
             let output;
             let data = [];
-            db.attendance.get_monthly_attendance(body.month, body.year, body.user_id, function(monthly_data) { //time array for a id
+            db.attendance.get_monthly_attendance(body.month, body.year, userid, function(monthly_data) { //time array for a id
                 let month = new Date(Date.parse(body.month + " 1, 2012")).getMonth() + 1;
                 let no_of_days = (moment(body.year + "-" + month, "YYYY-MM").daysInMonth()) + 1;
                 let days_of_month = _.range(1, no_of_days);
@@ -41,7 +44,7 @@ module.exports = {
                         active_hours: { hours: _.floor((active_hours / 3600000) % 24), minutes: _.floor(((active_hours) / 60000) % 60), total_time: _.floor((active_hours / 3600000) % 24) + "." + _.floor((_.floor(((active_hours) / 60000) % 60) * 5) / 3) }
                     })
                 });
-                data.push({ user_id: body.user_id, day_wise_detail: daily });
+                data.push({ user_id: userid, day_wise_detail: daily });
                 output = { error: 0, message: "", data: data };
                 resolve(output)
             })
