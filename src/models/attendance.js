@@ -64,7 +64,6 @@ export default function(sequelize, DataTypes) {
         attendance.get_employee_hours = (body, db) => {
             return new Promise((resolve, reject) => {
                 if (body.user_id != 'null' && body.user_id != 0) {
-                    console.log(body.user_id)
                     attendance.get_monthly_attendance(body.month, body.year, body.user_id, function(data) {
                         let no_of_days = (moment(body.year + "-" + body.month, "YYYY-MM").daysInMonth()) + 1;
                         let days_of_month = _.range(1, no_of_days);
