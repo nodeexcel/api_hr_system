@@ -133,10 +133,16 @@ export default function(sequelize, DataTypes) {
             });
         },
 
-        user_profile.user_list = () => {
+        user_profile.user_list = (db) => {
             return new Promise((resolve, reject) => {
-                user_profile.findAll({ attributes: ['user_id', 'name'] }).then((dataFetched) => {
-                    resolve({ error: 0, message: "", data: dataFetched })
+                db.users.findAll({ attributes: ['id'], where: { status: 'Enabled' } }).then((dataFetched) => {
+                    let enabled_userIds = [];
+                    _.forEach(dataFetched, function(val) {
+                        enabled_userIds.push(val.id)
+                    })
+                    user_profile.findAll({ attributes: ['user_id', 'name'], where: { user_Id: { $in: enabled_userIds } } }).then((dataFetched) => {
+                        resolve({ error: 0, message: "", data: dataFetched })
+                    })
                 })
             })
         }
