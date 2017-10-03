@@ -135,7 +135,7 @@ export default function(sequelize, DataTypes) {
 
         user_profile.user_list = () => {
             return new Promise((resolve, reject) => {
-                user_profile.findAll({ attributes: ['id', 'name'] }).then((dataFetched) => {
+                user_profile.findAll({ attributes: ['user_id', 'name'] }).then((dataFetched) => {
                     resolve({ error: 0, message: "", data: dataFetched })
                 })
             })
