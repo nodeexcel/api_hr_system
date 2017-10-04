@@ -114,7 +114,7 @@ export default function(sequelize, DataTypes) {
         },
 
         attendance.get_monthly_attendance = (input_month, year, user_id, callback) => {
-            let month = moment().month(body.month).format("M");
+            let month = moment().month(input_month).format("M");
             if ((month / 10) < 1) {
                 month = "0" + month;
             }
@@ -136,7 +136,9 @@ export default function(sequelize, DataTypes) {
 
         attendance.get_monthly_performance = (body, db) => {
             return new Promise((resolve, reject) => {
+
                 attendance.get_enabled_users_performance(body, db, function(totalHrs, activeHrs) {
+                    console.log("dhfvjdhsssssssss")
                     let month = moment().month(body.month).format("M");
                     let no_of_days = (moment(body.year + "-" + month, "YYYY-MM").daysInMonth()) + 1;
                     let days_of_month = _.range(1, no_of_days);
@@ -168,6 +170,7 @@ export default function(sequelize, DataTypes) {
         },
 
         attendance.get_enabled_users_performance = (body, db, callback) => {
+            console.log("dhfvjdhsssssssss")
             return new Promise((resolve, reject) => {
                 let activeHrsFinal = [];
                 let totalHrsFinal = [];
@@ -175,7 +178,8 @@ export default function(sequelize, DataTypes) {
                     _.forEach(enabled_users, function(emp, key) {
                         let activeHrs = [];
                         let totalHrs = [];
-                        helper.monthly_reports.working_time_calculations(body, emp.id, db).then((data) => {
+                        helper.monthly_reports.working_time_calculations(body, emp.id).then((data) => {
+                            console.log("dhfvjdhsssssssss")
                             let monthlydetail = data.data;
                             _.forEach(monthlydetail, function(value) {
                                 _.forEach(value.day_wise_detail, function(val) {
