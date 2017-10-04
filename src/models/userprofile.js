@@ -41,8 +41,7 @@ export default function(sequelize, DataTypes) {
         termination_date: { type: DataTypes.DATE },
         holding_comments: { type: DataTypes.TEXT },
         training_month: { type: DataTypes.INTEGER },
-        slack_msg: { type: DataTypes.INTEGER },
-        unique_key: { type: DataTypes.STRING }
+        slack_msg: { type: DataTypes.INTEGER }
     }, {
         timestamps: false,
         freezeTableName: true
