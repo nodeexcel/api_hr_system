@@ -64,7 +64,7 @@ export default function(sequelize, DataTypes) {
         attendance.get_employee_hours = (body, db) => {
             return new Promise((resolve, reject) => {
                 if (body.user_id != 'null' && body.user_id != 0) {
-                    let month = new Date(Date.parse(body.month + " 1, 2012")).getMonth() + 1;
+                    let month = moment().month(body.month).format("M");
                     if ((month / 10) < 1) {
                         month = "0" + month;
                     }
@@ -96,10 +96,9 @@ export default function(sequelize, DataTypes) {
                             } else {
                                 entryTime = moment(timing).format("hh:mm:ss A");
                                 entryArray.push({ in_time: entryTime });
-                                0
                             }
                         })
-                        db.user_profile.findOne({ attributes: ['user_id', 'name'], where: { user_Id: body.user_id } }).then((dataFetched) => {
+                        db.user_profile.findOne({ attributes: ['user_Id', 'name'], where: { user_Id: body.user_id } }).then((dataFetched) => {
                             resolve({
                                 error: 0,
                                 message: "",
@@ -115,7 +114,7 @@ export default function(sequelize, DataTypes) {
         },
 
         attendance.get_monthly_attendance = (input_month, year, user_id, callback) => {
-            let month = new Date(Date.parse(input_month + " 1, 2012")).getMonth() + 1;
+            let month = moment().month(body.month).format("M");
             if ((month / 10) < 1) {
                 month = "0" + month;
             }

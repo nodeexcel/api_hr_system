@@ -13,7 +13,7 @@ module.exports = {
             let data = [];
             if (userid != 'null' && userid != 0) {
                 db.attendance.get_monthly_attendance(body.month, body.year, userid, function(monthly_data) { //time array for a id
-                    let month = new Date(Date.parse(body.month + " 1, 2012")).getMonth() + 1;
+                    let month = moment().month(body.month).format("M");
                     let no_of_days = (moment(body.year + "-" + month, "YYYY-MM").daysInMonth()) + 1;
                     let days_of_month = _.range(1, no_of_days);
                     let daily = [];
