@@ -139,7 +139,7 @@ export default function(sequelize, DataTypes) {
                     _.forEach(dataFetched, function(val) {
                         enabled_userIds.push(val.id)
                     })
-                    user_profile.findAll({ attributes: ['user_id', 'name'], where: { user_Id: { $in: enabled_userIds } } }).then((dataFetched) => {
+                    user_profile.findAll({ attributes: ['user_Id', 'name'], where: { user_Id: { $in: enabled_userIds } } }).then((dataFetched) => {
                         resolve({ error: 0, message: "", data: dataFetched })
                     })
                 })

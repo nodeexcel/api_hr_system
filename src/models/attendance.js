@@ -64,41 +64,47 @@ export default function(sequelize, DataTypes) {
         attendance.get_employee_hours = (body, db) => {
             return new Promise((resolve, reject) => {
                 if (body.user_id != 'null' && body.user_id != 0) {
-                    attendance.get_monthly_attendance(body.month, body.year, body.user_id, function(data) {
-                        let no_of_days = (moment(body.year + "-" + body.month, "YYYY-MM").daysInMonth()) + 1;
-                        let days_of_month = _.range(1, no_of_days);
+                    let month = moment().month(body.month).format("M");
+                    if ((month / 10) < 1) {
+                        month = "0" + month;
+                    }
+                    attendance.findAll({
+                        where: { timing: { $regexp: month + '-' + body.date + '-' + body.year }, user_id: body.user_id },
+                    }).then((data) => {
+                        let timings = [];
+                        _.forEach(data, function(value) {
+                            let str = value.timing
+                            let timing = [str.substr(0, 19), str.substr(19)].join(' ');
+                            timings.push(timing);
+                        })
+                        let sortData = _.sortBy(timings, function(o) {
+                            return new moment(o);
+                        });
+
                         let entryArray = [];
                         let exitArray = [];
-                        _.forEach(days_of_month, function(day) {
-                            let entryTime = 0;
-                            let exitTime = 0;
-                            _.forEach(data, function(value) {
-                                let str = value;
-                                let date = moment([str.substr(0, 19), str.substr(19)].join(' ')).format('DD');
-                                if (date == day) {
-                                    let timing = [str.substr(0, 19), str.substr(19)].join(' ');
-                                    if (entryTime) {
-                                        exitTime = new Date((timing)).getTime();
-                                    } else {
-                                        entryTime = new Date(timing).getTime();
-                                    }
-                                }
-                            })
-                            entryArray.push(entryTime);
-                            exitArray.push(exitTime);
-                        })
-                        let daily_hours = [];
-                        _.forEach(days_of_month, function(day) {
 
-                            let diff = exitArray[day - 1] - entryArray[day - 1];
-                            diff = diff / 1000 / 60;
-                            daily_hours.push({
-                                day: day + " " + body.month,
-                                working_time: { hours: _.floor(diff / 60), minutes: _.floor(diff % 60) },
-                                total_time: _.floor(diff / 60) + "." + _.floor((_.floor(diff % 60) * 5) / 3)
+                        let entryTime = 0;
+                        let exitTime = 0;
+                        _.forEach(sortData, function(value) {
+                            let str = value;
+                            let timing = [str.substr(0, 19), str.substr(19)].join(' ');
+                            if (entryTime) {
+                                exitTime = moment(timing).format("hh:mm:ss A");
+                                exitArray.push({ out_time: exitTime });
+                                entryTime = 0;
+                            } else {
+                                entryTime = moment(timing).format("hh:mm:ss A");
+                                entryArray.push({ in_time: entryTime });
+                            }
+                        })
+                        db.user_profile.findOne({ attributes: ['user_Id', 'name'], where: { user_Id: body.user_id } }).then((dataFetched) => {
+                            resolve({
+                                error: 0,
+                                message: "",
+                                data: { user_id: body.user_id, employee_name: dataFetched.name, date: body.month + '-' + body.date + '-' + body.year, entry_time: entryArray, exit_time: exitArray }
                             });
-                        });
-                        resolve({ error: 0, message: "", data: daily_hours })
+                        })
                     })
                 } else {
                     reject({ error: 1, message: config.errMsg1, data: "" })
@@ -108,7 +114,7 @@ export default function(sequelize, DataTypes) {
         },
 
         attendance.get_monthly_attendance = (input_month, year, user_id, callback) => {
-            let month = new Date(Date.parse(input_month + " 1, 2012")).getMonth() + 1;
+            let month = moment().month(body.month).format("M");
             if ((month / 10) < 1) {
                 month = "0" + month;
             }
