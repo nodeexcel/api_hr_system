@@ -33,7 +33,6 @@ module.exports = {
     },
 
     monthlyPerformance: (req, res, next) => {
-        console.log(req.body)
         db.attendance.get_monthly_performance(req.body, db).then((data) => {
             res.json(data)
         }).catch(err => next(err))
