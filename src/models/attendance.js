@@ -114,7 +114,7 @@ export default function(sequelize, DataTypes) {
         },
 
         attendance.get_monthly_attendance = (input_month, year, user_id, callback) => {
-            let month = moment().month(body.month).format("M");
+            let month = moment().month(input_month).format("M");
             if ((month / 10) < 1) {
                 month = "0" + month;
             }
@@ -142,7 +142,6 @@ export default function(sequelize, DataTypes) {
                     let days_of_month = _.range(1, no_of_days);
                     let daily = [];
                     let performance = [];
-
                     _.forEach(days_of_month, function(day) {
                         let day_wise_total_hrs = [];
                         let day_wise_active_hrs = [];
@@ -175,7 +174,7 @@ export default function(sequelize, DataTypes) {
                     _.forEach(enabled_users, function(emp, key) {
                         let activeHrs = [];
                         let totalHrs = [];
-                        helper.monthly_reports.working_time_calculations(body, emp.id, db).then((data) => {
+                        helper.monthly_reports.working_time_calculations(body, emp.id).then((data) => {
                             let monthlydetail = data.data;
                             _.forEach(monthlydetail, function(value) {
                                 _.forEach(value.day_wise_detail, function(val) {
