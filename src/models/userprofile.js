@@ -9,7 +9,7 @@ export default function(sequelize, DataTypes) {
         name: { type: DataTypes.STRING },
         jobtitle: { type: DataTypes.STRING },
         dateofjoining: { type: DataTypes.DATE },
-        user_id: { type: DataTypes.INTEGER },
+        user_Id: { type: DataTypes.INTEGER },
         dob: { type: DataTypes.DATE },
         gender: { type: DataTypes.STRING },
         marital_status: { type: DataTypes.STRING },
@@ -96,7 +96,7 @@ export default function(sequelize, DataTypes) {
 
         user_profile.yearly_joining_termination_stats = (body) => {
             return new Promise((resolve, reject) => {
-                user_profile.findAll({}).then((dataFetched) => {
+                user_profile.findAll({ attributes: ['dateofjoining', 'termination_date'] }).then((dataFetched) => {
                     let data = [];
                     helper.yearArray.array_startyear_endyear(body, function(arrayYear) {
                         _.each(arrayYear, function(value) {
@@ -133,10 +133,16 @@ export default function(sequelize, DataTypes) {
             });
         },
 
-        user_profile.user_list = () => {
+        user_profile.user_list = (db) => {
             return new Promise((resolve, reject) => {
-                user_profile.findAll({ attributes: ['user_id', 'name'] }).then((dataFetched) => {
-                    resolve({ error: 0, message: "", data: dataFetched })
+                db.users.findAll({ attributes: ['id'], where: { status: 'Enabled' } }).then((dataFetched) => {
+                    let enabled_userIds = [];
+                    _.forEach(dataFetched, function(val) {
+                        enabled_userIds.push(val.id)
+                    })
+                    user_profile.findAll({ attributes: ['user_id', 'name'], where: { user_Id: { $in: enabled_userIds } } }).then((dataFetched) => {
+                        resolve({ error: 0, message: "", data: dataFetched })
+                    })
                 })
             })
         }

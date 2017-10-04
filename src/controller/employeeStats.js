@@ -39,7 +39,7 @@ module.exports = {
     },
 
     list: (req, res, next) => {
-        db.user_profile.user_list().then((data) => { // uploads attendance  by employees in manual_attenance table
+        db.user_profile.user_list(db).then((data) => { // uploads attendance  by employees in manual_attenance table
             res.json(data)
         }).catch(err => next(err))
     }
