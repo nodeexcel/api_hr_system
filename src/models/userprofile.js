@@ -9,7 +9,7 @@ export default function(sequelize, DataTypes) {
         name: { type: DataTypes.STRING },
         jobtitle: { type: DataTypes.STRING },
         dateofjoining: { type: DataTypes.DATE },
-        user_id: { type: DataTypes.INTEGER },
+        user_Id: { type: DataTypes.INTEGER },
         dob: { type: DataTypes.DATE },
         gender: { type: DataTypes.STRING },
         marital_status: { type: DataTypes.STRING },
