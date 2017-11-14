@@ -45,6 +45,11 @@ export default function(sequelize, DataTypes) {
     }, {
         timestamps: false,
         freezeTableName: true
+    }, {
+        associate: (model) => {
+
+            user_profile.hasOne(db.users, { foreignKey: 'user_id' });
+        }
     });
 
     user_profile.employeeGraphStats = (db) => {
