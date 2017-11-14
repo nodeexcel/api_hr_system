@@ -1,4 +1,6 @@
 import db from '../db';
+import services from '../services';
+import config from '../../../config.json';
 
 module.exports = {
 
@@ -11,8 +13,10 @@ module.exports = {
     approvalAction: (req, res, next) => {
         db.manual_attendance.approveUpdatedAttendance(req.body, db, function(error, status) { //approves or decline the manual attendance request
             if (error) {
+                services.slack.slack_notify(config.reject, { type: 'user', id: body.id })
                 next(error)
             } else {
+                services.slack.slack_notify(config.approved, { type: 'user', id: body.id })
                 res.json({ "error": 0, "message": "", "data": status })
             }
         })

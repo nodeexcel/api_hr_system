@@ -159,7 +159,22 @@ export default function(sequelize, DataTypes) {
                                 sortActiveTime = _.orderBy(day_wise_active_hrs, ['hours'], ['desc']);
                             }
                         });
-                        performance.push({ day: (day + " " + moment(month, 'MM').format('MMMM')), top_total_hrs: { username: sortTotalTime[0].username, hours: sortTotalTime[0].hours }, top_active_hrs: { username: sortActiveTime[0].username, hours: sortActiveTime[0].hours } })
+                        // console.log((sortTotalTime[0].hours == 0))
+                        if (sortTotalTime[0].hours == 0) {
+                            if (sortActiveTime[0].hours == 0) {
+                                performance.push({ day: (day + " " + moment(month, 'MM').format('MMMM')), top_total_hrs: { username: " ", hours: sortTotalTime[0].hours }, top_active_hrs: { username: " ", hours: sortActiveTime[0].hours } })
+                            } else {
+                                performance.push({ day: (day + " " + moment(month, 'MM').format('MMMM')), top_total_hrs: { username: " ", hours: sortTotalTime[0].hours }, top_active_hrs: { username: sortActiveTime[0].username, hours: sortActiveTime[0].hours } })
+                            }
+                        } else {
+                            if (sortActiveTime[0].hours == 0) {
+                                performance.push({ day: (day + " " + moment(month, 'MM').format('MMMM')), top_total_hrs: { username: sortTotalTime[0].username, hours: sortTotalTime[0].hours }, top_active_hrs: { username: " ", hours: sortActiveTime[0].hours } })
+                            } else {
+                                performance.push({ day: (day + " " + moment(month, 'MM').format('MMMM')), top_total_hrs: { username: sortTotalTime[0].username, hours: sortTotalTime[0].hours }, top_active_hrs: { username: sortActiveTime[0].username, hours: sortActiveTime[0].hours } })
+                            }
+
+                        }
+                        //performance.push({ day: (day + " " + moment(month, 'MM').format('MMMM')), top_total_hrs: { username: sortTotalTime[0].username, hours: sortTotalTime[0].hours }, top_active_hrs: { username: " ", hours: sortActiveTime[0].hours } })
                     });
                     resolve({ error: 0, message: "", data: performance });
                 });
