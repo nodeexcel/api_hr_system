@@ -1,4 +1,6 @@
 import db from '../db';
+import services from '../services';
+import config from '../../../config.json';
 
 module.exports = {
 
@@ -11,8 +13,12 @@ module.exports = {
     attendanceByEmployee: (req, res, next) => {
         let data = JSON.parse(req.body);
         db.attendance.uploadAttendanceByUserId(data, db).then((status) => { //uploads attendance  by employees in manual_attenance table
+            services.slack.slack_notify(config.approvedRequest, { type: 'user', id: body.id })
             res.json(status)
-        }).catch(err => next(err))
+        }).catch(err => {
+            services.slack.slack_notify(config.rejectRequest, { type: 'user', id: body.id })
+            next(err)
+        })
     }
 
 }

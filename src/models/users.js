@@ -1,3 +1,11 @@
+import config from '../../../config.json';
+import db from '../db';
+import jwt from 'jwt-simple';
+import constant from '../helper/constant.js';
+import array from '../helper/array.js';
+import _ from 'lodash';
+import request from 'request';
+
 export default function(sequelize, DataTypes) {
 
     let users = sequelize.define('users', { // inserting data to database of attendance

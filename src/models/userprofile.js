@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import moment from 'moment';
 import helper from '../helper';
+import services from '../services';
+import config from '../../../config.json';
 
 export default function(sequelize, DataTypes) {
 
@@ -134,16 +136,20 @@ export default function(sequelize, DataTypes) {
 
         user_profile.user_list = (db) => {
             return new Promise((resolve, reject) => {
-                db.users.findAll({ attributes: ['id'], where: { status: 'Enabled' } }).then((dataFetched) => {
-                    let enabled_userIds = [];
-                    _.forEach(dataFetched, function(val) {
-                        enabled_userIds.push(val.id)
-                    })
-                    user_profile.findAll({ attributes: ['user_Id', 'name'], where: { user_Id: { $in: enabled_userIds } } }).then((dataFetched) => {
-                        resolve({ error: 0, message: "", data: dataFetched })
+                services.slack.slack_notify(config.reject, { type: 'user', id: 384 }, function(data) {
+                    console.log(data)
+
+                    db.users.findAll({ attributes: ['id'], where: { status: 'Enabled' } }).then((dataFetched) => {
+                        let enabled_userIds = [];
+                        _.forEach(dataFetched, function(val) {
+                            enabled_userIds.push(val.id)
+                        })
+                        user_profile.findAll({ attributes: ['user_Id', 'name'], where: { user_Id: { $in: enabled_userIds } } }).then((dataFetched) => {
+                            resolve({ error: 0, message: "", data: dataFetched })
+                        })
                     })
                 })
-            })
+            });
         }
     return user_profile;
 }
