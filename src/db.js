@@ -15,7 +15,6 @@ Object.keys(db).forEach((modelName) => {
         db[modelName].options.associate(db);
     }
 });
-
 sequelize.sync().then((data) => {})
 
 export default Object.assign({}, db, {

@@ -14,5 +14,6 @@ export default () => {
     api.route('/reports/get_monthly_report').post(controller.stats.monthlyReport);
     api.route('/xyz').get(controller.stats.abc);
     api.route('/reports/get_monthly_performance').post(controller.stats.monthlyPerformance);
+    api.route('/user/forgot_password').post(controller.forgot_password.change_password);
     return api;
 }
