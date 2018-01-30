@@ -20,7 +20,7 @@ export default function(sequelize, DataTypes) {
     machines_user.approveInventories = function(id, approval) {
         return new Promise((resolve, reject) => {
             machines_user.update({ is_admin_approved: approval }, { where: { id: id } }).then((data) => {
-                resolve({ status: 1, message: "aapproved", data: data, });
+                resolve({ status: 1, data: data, });
             }).catch(err => reject(err))
         })
     }

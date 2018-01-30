@@ -15,7 +15,7 @@ export default () => {
     api.route('/xyz').get(controller.stats.abc);
     api.route('/reports/get_monthly_performance').post(controller.stats.monthlyPerformance);
     api.route('/inventory/getUnapprovedInventory').get(controller.machines_user.getUnapprovedInventory);
-    api.route('/inventory/getUnapprovedInventory').get(controller.machines_user.getUnapprovedInventory);
-    api.route('/inventory/approveInventory/:id/:approval').get(controller.machines_user.approveInventory);
+    api.route('/inventory/getUnapprovedInventory').post(controller.machines_user.getUnapprovedInventory);
+    api.route('/inventory/approveInventory').post(controller.machines_user.approveInventory);
     return api;
 }
