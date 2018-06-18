@@ -42,5 +42,17 @@ module.exports = {
         db.user_profile.user_list(db).then((data) => { // uploads attendance  by employees in manual_attenance table
             res.json(data)
         }).catch(err => next(err))
-    }
+    },
+
+    monthlyReportAllUsers: (req, res, next) => {
+        db.user_profile.user_list(db).then((usersList) => { // uploads attendance  by employees in manual_attenance table
+            if( usersList.data && usersList.data.length > 0 ){
+                helper.monthly_reports_all_users.working_time_calculations_all_users(usersList.data, req.body.year, req.body.month ).then((data) => {
+                    res.json(data)
+                }).catch(err => next(err))
+            } else {
+                res.json({ error: 1, message: "No user found", data: "" })
+            }
+        }).catch(err => next(err))
+    },
 }
