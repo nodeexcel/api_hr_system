@@ -73,9 +73,12 @@ module.exports = {
     },
 
     working_time_calculations_all_users: function(usersList, year, month ) {
+        console.log(year)
+        console.log(month)
         return new Promise((resolve, reject) => {
             this.start_getting_users_work_time( usersList, year, month , function( finalData ) {
-                resolve(finalData)
+                var output = { error: 0, message: "", data: finalData };
+                resolve(output)
             })
         })
     }
