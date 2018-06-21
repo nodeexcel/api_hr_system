@@ -55,8 +55,9 @@ module.exports = {
         if( users.length == 0 ){
             callback( returnData )
         } else {
-            var T = this;
             var userDetails = users[0]
+            users.splice(0, 1)
+            var T = this;
             var user_Id = userDetails.user_Id
             var name = userDetails.name;
             this.get_user_month_work_time( year, month, user_Id, function( userData ){
@@ -66,7 +67,6 @@ module.exports = {
                     data: userData
                 }
                 returnData.push( d );
-                users.splice(0, 1)
                 T.start_getting_users_work_time( users, year, month, callback  )
             })
         }
