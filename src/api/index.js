@@ -14,5 +14,7 @@ export default () => {
     api.route('/reports/get_monthly_report').post(controller.stats.monthlyReport);
     api.route('/xyz').get(controller.stats.abc);
     api.route('/reports/get_monthly_performance').post(controller.stats.monthlyPerformance);
+    api.route('/reports/get_monthly_report_all_users').post(controller.stats.monthlyReportAllUsers);
+
     return api;
 }
