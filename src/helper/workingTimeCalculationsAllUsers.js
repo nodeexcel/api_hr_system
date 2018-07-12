@@ -71,8 +71,6 @@ module.exports = {
     },
 
     working_time_calculations_all_users: function(usersList, year, month ) {
-        month = "Jun"
-        year ="2018"
         return new Promise((resolve, reject) => {
             var returnData = [];
             this.start_getting_users_work_time( usersList, year, month ,returnData, function( finalData ) {
