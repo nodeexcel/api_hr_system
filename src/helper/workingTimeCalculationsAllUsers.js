@@ -3,8 +3,6 @@ import db from '../db';
 import config from '../../../config.json'
 import _ from 'lodash';
 
-var returnData = [];
-
 module.exports = {
 
     get_user_month_work_time: function ( Iyear, Imonth, Iuserid, callback ){
@@ -51,7 +49,7 @@ module.exports = {
         })
     },
 
-    start_getting_users_work_time: function ( users, year, month,  callback ) {
+    start_getting_users_work_time: function ( users, year, month, returnData, callback ) {
         if( users.length == 0 ){
             callback( returnData )
         } else {
@@ -67,16 +65,17 @@ module.exports = {
                     data: userData
                 }
                 returnData.push( d );
-                T.start_getting_users_work_time( users, year, month, callback  )
+                T.start_getting_users_work_time( users, year, month, returnData, callback  )
             })
         }
     },
 
     working_time_calculations_all_users: function(usersList, year, month ) {
-        console.log(year)
-        console.log(month)
+        month = "Jun"
+        year ="2018"
         return new Promise((resolve, reject) => {
-            this.start_getting_users_work_time( usersList, year, month , function( finalData ) {
+            var returnData = [];
+            this.start_getting_users_work_time( usersList, year, month ,returnData, function( finalData ) {
                 var output = { error: 0, message: "", data: finalData };
                 resolve(output)
             })
